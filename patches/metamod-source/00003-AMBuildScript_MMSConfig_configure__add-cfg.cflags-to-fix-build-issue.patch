@@ -1,0 +1,48 @@
+From 7a09287e7859920058544d9a483ffe8ed43d2a17 Mon Sep 17 00:00:00 2001
+From: Timo Reichl <thetredev@gmail.com>
+Date: Mon, 21 Apr 2025 00:54:48 +0200
+Subject: [PATCH] AMBuildScript/MMSConfig::configure: add cfg.cflags to fix
+ build issue
+
+Signed-off-by: Timo Reichl <thetredev@gmail.com>
+---
+ AMBuildScript | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/AMBuildScript b/AMBuildScript
+index 27e8db7..eb25429 100644
+--- a/AMBuildScript
++++ b/AMBuildScript
+@@ -114,6 +114,9 @@ class MMSConfig(object):
+         '_vsnprintf=vsnprintf',
+         'HAVE_STDINT_H',
+         'GNUC',
++        'GNUC',
++        'POSIX',
++        'LINUX',
+       ]
+       cfg.cflags += [
+         '-pipe',
+@@ -125,6 +128,9 @@ class MMSConfig(object):
+         '-Wno-switch',
+         '-msse',
+         '-m32',
++        # added these to make build possible in 2025
++        '-Wno-error=unknown-pragmas',
++        '-Wno-error=format-truncation',
+       ]
+       if (cxx.name == 'gcc' and cxx.majorVersion >= 4) or cxx.name == 'clang':
+         cfg.cflags += ['-fvisibility=hidden']
+@@ -136,6 +142,9 @@ class MMSConfig(object):
+         '-fno-threadsafe-statics',
+         '-Wno-non-virtual-dtor',
+         '-Wno-overloaded-virtual',
++        # added these to make build possible in 2025
++        '-Wno-error=unknown-pragmas',
++        '-Wno-error=format-truncation=',
+       ]
+       if (cxx.name == 'gcc' and cxx.majorVersion >= 4 and cxx.minorVersion >= 7) or \
+           (cxx.name == 'clang' and cxx.majorVersion >= 3):
+-- 
+2.39.5
+

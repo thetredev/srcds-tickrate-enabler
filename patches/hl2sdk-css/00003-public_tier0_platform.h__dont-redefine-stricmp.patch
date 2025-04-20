@@ -1,0 +1,26 @@
+From 6d60528d24c3664451ac0fb4bfde4c9f28f40173 Mon Sep 17 00:00:00 2001
+From: Timo Reichl <thetredev@gmail.com>
+Date: Mon, 21 Apr 2025 01:09:23 +0200
+Subject: [PATCH] public/tier0/platform.h: don't redefine stricmp
+
+Signed-off-by: Timo Reichl <thetredev@gmail.com>
+---
+ public/tier0/platform.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/public/tier0/platform.h b/public/tier0/platform.h
+index ffd182ac..655d18e3 100644
+--- a/public/tier0/platform.h
++++ b/public/tier0/platform.h
+@@ -796,7 +796,7 @@ typedef unsigned int *LPDWORD;
+ 
+ 
+ #ifdef POSIX
+-#define _stricmp stricmp
++//#define _stricmp stricmp
+ #define strcmpi stricmp
+ #define stricmp strcasecmp
+ #define _vsnprintf vsnprintf
+-- 
+2.39.5
+

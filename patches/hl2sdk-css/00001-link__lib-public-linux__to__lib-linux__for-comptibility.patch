@@ -1,0 +1,22 @@
+From 4351efd10669bd04f2a961a6576018b1c9f788a3 Mon Sep 17 00:00:00 2001
+From: Timo Reichl <thetredev@gmail.com>
+Date: Mon, 21 Apr 2025 00:34:36 +0200
+Subject: [PATCH] lib: link lib/public/linux to lib/linux for compatibility
+
+Signed-off-by: Timo Reichl <thetredev@gmail.com>
+---
+ lib/linux | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 120000 lib/linux
+
+diff --git a/lib/linux b/lib/linux
+new file mode 120000
+index 00000000..2f2220ae
+--- /dev/null
++++ b/lib/linux
+@@ -0,0 +1 @@
++public/linux
+\ No newline at end of file
+-- 
+2.39.5
+

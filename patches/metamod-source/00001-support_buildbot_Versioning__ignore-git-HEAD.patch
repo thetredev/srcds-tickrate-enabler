@@ -1,0 +1,45 @@
+From c85af512c9cee0a59df50277b78588fae62af288 Mon Sep 17 00:00:00 2001
+From: Timo Reichl <thetredev@gmail.com>
+Date: Mon, 21 Apr 2025 00:18:07 +0200
+Subject: [PATCH] support/buildbot/Versioning: ignore git HEAD
+
+The repo is included as submodule. This is just a workaround to get it
+to configure at all.
+
+Signed-off-by: Timo Reichl <thetredev@gmail.com>
+---
+ support/buildbot/Versioning | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/support/buildbot/Versioning b/support/buildbot/Versioning
+index 2144f28..bc8b687 100644
+--- a/support/buildbot/Versioning
++++ b/support/buildbot/Versioning
+@@ -15,18 +15,18 @@ outputs = [
+   os.path.join(builder.buildFolder, 'includes', 'metamod_version_auto.h')
+ ]
+ 
+-with open(os.path.join(builder.sourcePath, '.git', 'HEAD')) as fp:
+- git_state = fp.read().strip().split(':')[1].strip()
++# with open(os.path.join(builder.sourcePath, '.git', 'HEAD')) as fp:
++#  git_state = fp.read().strip().split(':')[1].strip()
+ 
+-git_head_path = os.path.join(builder.sourcePath, '.git', git_state)
+-if not os.path.exists(git_head_path):
+-  git_head_path = os.path.join(builder.sourcePath, '.git', 'HEAD')
++# git_head_path = os.path.join(builder.sourcePath, '.git', git_state)
++# if not os.path.exists(git_head_path):
++#   git_head_path = os.path.join(builder.sourcePath, '.git', 'HEAD')
+ 
+ sources = [
+   os.path.join(builder.sourcePath, 'product.version'),
+ 
+   # This is a hack, but we need some way to only run this script when Git changes.
+-  git_head_path,
++  #git_head_path,
+ 
+   # The script source is a dependency, of course...
+   argv[1]
+-- 
+2.39.5
+

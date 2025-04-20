@@ -22,6 +22,15 @@ cd ..
 mkdir -p metamod-source/build
 cd metamod-source/build
 
+python3 -m venv .venv
+source .venv/bin/activate
+pip install wheel
+
+rm -rf /tmp/.srcds-tickrate-enabler
+git clone https://github.com/alliedmodders/ambuild /tmp/.srcds-tickrate-enabler/ambuild
+pip install /tmp/.srcds-tickrate-enabler/ambuild
+rm -rf /tmp/.srcds-tickrate-enabler/ambuild
+
 rm -rf ../.git/modules/$(basename $(readlink -f .))/rebase-apply
 git submodule update --init
 git branch -D temp

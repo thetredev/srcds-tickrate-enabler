@@ -1,6 +1,6 @@
-//===== Copyright © 1996-2008, Valve Corporation, All rights reserved. ======//
+//===== Copyright ï¿½ 1996-2008, Valve Corporation, All rights reserved. ======//
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //
@@ -31,7 +31,7 @@ public:
 	virtual void			Unload( void );
 	virtual void			Pause( void );
 	virtual void			UnPause( void );
-	virtual const char     *GetPluginDescription( void );      
+	virtual const char     *GetPluginDescription( void );
 	virtual void			LevelInit( char const *pMapName );
 	virtual void			ServerActivate( edict_t *pEdictList, int edictCount, int clientMax );
 	virtual void			GameFrame( bool simulating );
@@ -48,7 +48,7 @@ public:
 
 	// added with version 3 of the interface.
 	virtual void			OnEdictAllocated( edict_t *edict );
-	virtual void			OnEdictFreed( const edict_t *edict  );	
+	virtual void			OnEdictFreed( const edict_t *edict  );
 
 	// IGameEventListener Interface
 	virtual void FireGameEvent( KeyValues * event );
@@ -59,7 +59,7 @@ private:
 };
 
 
-// 
+//
 // The plugin is a static singleton that is exported as an interface
 //
 CEmptyServerPlugin g_EmtpyServerPlugin;
@@ -191,7 +191,7 @@ void CEmptyServerPlugin::ClientDisconnect( edict_t *pEntity )
 }
 
 //---------------------------------------------------------------------------------
-// Purpose: called on 
+// Purpose: called on
 //---------------------------------------------------------------------------------
 void CEmptyServerPlugin::ClientPutInServer( edict_t *pEntity, char const *playername )
 {

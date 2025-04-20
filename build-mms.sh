@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sdk=${1}
+current_git_branch=$(git branch --show-current)
 
 
 rm -rf hl2sdk-${sdk} metamod-source
@@ -18,6 +19,7 @@ for git_patch in $(ls ../patches/hl2sdk-${sdk}/*.patch); do
 done
 
 cd ..
+git checkout ${current_git_branch}
 
 mkdir -p metamod-source/build
 cd metamod-source/build
@@ -43,3 +45,6 @@ done
 
 python3 ../configure.py --sdks ${1}
 ambuild
+
+cd ../..
+git checkout ${current_git_branch}

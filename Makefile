@@ -12,7 +12,7 @@ OPTFLAGS=-O3
 # Change these to the proper
 # locations for your system.
 # ******************************
-HL2SDK=./hl2sdk-css
+HL2SDK=./hl2sdk-$(ENGINE)
 MMSDK=./metamod-source
 
 # Include Source SDK directories
@@ -28,7 +28,7 @@ output_dir = ./output
 all: clean mms build_object build_so
 
 mms:
-	-./build-mms.sh css
+	-./build-mms.sh $(ENGINE)
 	-cd $(current_dir)
 
 build_object: $(source_dir)/serverplugin_empty.cpp

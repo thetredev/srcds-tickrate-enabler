@@ -14,33 +14,44 @@ OPTFLAGS=-O3
 # ******************************
 HL2SDK=./hl2sdk-$(ENGINE)
 MMSDK=./metamod-source
+source_dir = ./src
 
 # Include Source SDK directories
-INCLUDES=-I$(HL2SDK)/public -I$(HL2SDK)/public/tier0 -I$(HL2SDK)/public/tier1 -I$(MMSDK)/core -I$(MMSDK)/core/sourcehook
+INCLUDES=-I$(source_dir) -I$(HL2SDK)/public -I$(HL2SDK)/public/tier0 -I$(HL2SDK)/public/tier1 -I$(MMSDK)/core -I$(MMSDK)/core/sourcehook
 
 # Include the folder with the Source SDK libraries
 LINKFLAGS=-shared -m32 -L$(HL2SDK)/lib/public/linux
 
 current_dir = $(shell pwd)
-source_dir = ./src
 output_dir = ./output
 
-all: clean mms build_object build_so
+all: clean mms globals.o hooks.o plugin.o plugin.so
 
 mms:
 	-./build-mms.sh $(ENGINE)
 	-cd $(current_dir)
 
-build_object: $(source_dir)/serverplugin_empty.cpp
-	$(CXX) \
-		$(CFLAGS) \
-		-o $(output_dir)/serverplugin_empty.o $(OPTFLAGS) $(INCLUDES) \
-		-c $(source_dir)/serverplugin_empty.cpp
+globals.o: $(source_dir)/globals.cpp
+	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+		-o $(output_dir)/globals.o \
+		-c $(source_dir)/globals.cpp
 
-build_so: build_object
+hooks.o: $(source_dir)/hooks.cpp
+	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+		-o $(output_dir)/hooks.o \
+		-c $(source_dir)/hooks.cpp
+
+plugin.o: $(source_dir)/plugin.cpp
+	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+		-o $(output_dir)/plugin.o \
+		-c $(source_dir)/plugin.cpp
+
+plugin.so: globals.o hooks.o plugin.o
 	$(CXX) \
-		-o $(output_dir)/serverplugin_empty.so $(LINKFLAGS) \
-		$(output_dir)/serverplugin_empty.o \
+		-o $(output_dir)/plugin.so $(LINKFLAGS) \
+		$(output_dir)/globals.o \
+		$(output_dir)/hooks.o \
+		$(output_dir)/plugin.o \
 		$(MMSDK)/build/core/metamod.2.$(ENGINE)/sourcehook_sourcehook*.o \
 		-ltier0_srv \
 		-l:tier1_i486.a \

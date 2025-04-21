@@ -22,9 +22,9 @@
 
 // ========= PLUGIN INTERFACE DEFINITIONS =========
 // Expose plugin interface singleton
-Plugin g_Plugin;
+Plugin g_plugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(
-    Plugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_Plugin
+    Plugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_plugin
 );
 
 // Declare plugin hooks

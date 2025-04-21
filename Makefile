@@ -29,30 +29,30 @@ mms:
 	-./build-mms.sh $(ENGINE)
 	-cd $(current_dir)
 
-output:
-	-mkdir -p $(output_dir)
-
-globals.o: output $(source_dir)/globals.cpp
+globals.o: $(source_dir)/globals.cpp
+	-mkdir -p $(output_dir)/obj
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
-		-o $(output_dir)/globals.o \
+		-o $(output_dir)/obj/globals.o \
 		-c $(source_dir)/globals.cpp
 
-hooks.o: output $(source_dir)/hooks.cpp
+hooks.o: $(source_dir)/hooks.cpp
+	-mkdir -p $(output_dir)/obj
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
-		-o $(output_dir)/hooks.o \
+		-o $(output_dir)/obj/hooks.o \
 		-c $(source_dir)/hooks.cpp
 
-plugin.o: output $(source_dir)/plugin.cpp
+plugin.o: $(source_dir)/plugin.cpp
+	-mkdir -p $(output_dir)/obj
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
-		-o $(output_dir)/plugin.o \
+		-o $(output_dir)/obj/plugin.o \
 		-c $(source_dir)/plugin.cpp
 
 srcds_tickrate_enabler.so: globals.o hooks.o plugin.o
 	$(CXX) \
 		-o $(output_dir)/srcds_tickrate_enabler.so $(LINKFLAGS) \
-		$(output_dir)/globals.o \
-		$(output_dir)/hooks.o \
-		$(output_dir)/plugin.o \
+		$(output_dir)/obj/globals.o \
+		$(output_dir)/obj/hooks.o \
+		$(output_dir)/obj/plugin.o \
 		$(MMSDK)/build/core/metamod.2.$(ENGINE)/sourcehook_sourcehook*.o \
 		-ltier0_srv \
 		-l:tier1_i486.a \

@@ -71,8 +71,8 @@ apt-get install binutils
 
 ## Plugin Installation
 
-1. Download the latest release archive from https://github.com/thetredev/srcds-tickrate-enabler/releases to your server's `addons` directory, for example `cstrike/addons`
-2. Extract the archive: `tar xf <archive name>.tar.gz`
+1. Download the latest release archive from https://github.com/thetredev/srcds-tickrate-enabler/releases to your server's game directory, for example `cstrike`
+2. Extract the archive: `tar xf srcds_tickrate_enabler-<version>-linux_amd64.tar.gz`
 3. Restart SRCDS
 
 # Building From Source

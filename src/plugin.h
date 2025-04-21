@@ -10,6 +10,7 @@
 
 // ========= INCLUDES =========
 // HL2SDK
+#include <eiface.h>
 #include <igameevents.h>
 #include <engine/iserverplugin.h>
 

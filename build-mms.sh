@@ -2,6 +2,7 @@
 
 sdk=${1}
 current_git_branch=$(git branch --show-current)
+patches_dir=patches/linux/gcc
 
 
 rm -rf hl2sdk-${sdk} metamod-source
@@ -14,7 +15,7 @@ git checkout -b temp
 rm -rf ../.git/modules/$(basename $(readlink -f .))/rebase-apply
 
 # apply patches
-for git_patch in $(ls ../patches/hl2sdk-${sdk}/*.patch); do
+for git_patch in $(ls ../${patches_dir}/hl2sdk-${sdk}/*.patch); do
   git am --3way --ignore-space-change ${git_patch}
 done
 
@@ -39,7 +40,7 @@ git branch -D temp
 git checkout -b temp
 
 # apply patches
-for git_patch in $(ls ../../patches/metamod-source/*.patch); do
+for git_patch in $(ls ../../${patches_dir}/metamod-source/*.patch); do
   git am --3way --ignore-space-change ${git_patch}
 done
 

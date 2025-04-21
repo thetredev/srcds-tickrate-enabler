@@ -61,7 +61,7 @@ const char *get_servergamedll_interface_version(const char *game_dir) {
     const char *needle = "ServerGameDLL";
     const size_t needle_len = strlen(needle);
 
-    Msg("%s Parsing file %s for %s ...\n", g_log_message_prefix, server_srv_so, needle);
+    Msg("[%s] Parsing file %s for %s ...\n", g_plugin_name, server_srv_so, needle);
 
     char *buffer = NULL;
     size_t out_count = 0;
@@ -99,7 +99,7 @@ const char *get_servergamedll_interface_version(const char *game_dir) {
     }
 
     // return what we've found
-    Msg("%s Found %s value: %s\n", g_log_message_prefix, needle, buffer);
+    Msg("[%s] Found %s value: %s\n", g_plugin_name, needle, buffer);
     return buffer;
 }
 
@@ -112,7 +112,7 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
     // do not hook up anything on invalid values
     if (cmdline_tickrate < 10.0f) {
         // print an error message
-        Error("%s Requested tick rate %s is lower than the minimum value of 10.\n", g_log_message_prefix);
+        Error("[%s] Requested tick rate %s is lower than the minimum value of 10.\n", g_plugin_name);
 
         // indicate to SRCDS that the plugin couldn't load
         return false;
@@ -130,8 +130,8 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
     {
         // print an error message
         Error(
-            "%s Failed to get a pointer on ServerGameDLL. Expected: %s, Got: NULL\n",
-            g_log_message_prefix, servergamedll_interface_version
+            "[%s] Failed to get a pointer on ServerGameDLL. Expected: %s, Got: NULL\n",
+            g_plugin_name, servergamedll_interface_version
         );
 
         // indicate to SRCDS that the plugin couldn't load
@@ -145,7 +145,7 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
     SH_ADD_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, gamedll, get_tick_interval, false);
 
     // print a message
-    Msg("%s Loaded successfully!\n", g_log_message_prefix);
+    Msg("[%s] Loaded successfully!\n", g_plugin_name);
 
     // indicate to SRCDS that the plugin loaded successfully
     return true;

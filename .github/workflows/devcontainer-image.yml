@@ -34,4 +34,6 @@ jobs:
         with:
           file: .devcontainer/Dockerfile
           tags: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:ci-cache
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:ci-cache
           push: true

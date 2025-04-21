@@ -93,7 +93,7 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
     SH_ADD_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, m.server_game_dll, get_tick_interval, false);
 
     // set version info string
-    m.version_info = (char *)malloc(256);
+    m.version_info = new char[256];
     sprintf(m.version_info, "%s by %s %s", m.name, m.author, PLUGIN_VERSION);
 
     // print a message
@@ -105,7 +105,7 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
 
 // Unhook the `get_tick_interval()` from the game server DLL on unload
 void Plugin::Unload(void) {
-    free(m.version_info);
+    delete m.version_info;
     m.version_info = NULL;
 
     using namespace hooks;
@@ -162,7 +162,7 @@ const char *Plugin::get_servergamedll_interface_version(const char *game_dir) {
     } else {
         // free the memory allocated by getline()
         // as we're not using it anymore
-        free(buffer);
+        delete buffer;
 
         // fall back to the string declared in `eiface.h`
         buffer = (char *)INTERFACEVERSION_SERVERGAMEDLL;

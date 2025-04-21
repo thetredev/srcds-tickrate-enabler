@@ -41,17 +41,24 @@ hook_get_tick_interval.o: mms $(source_dir)/hooks/get_tick_interval.cpp
 		-o $(output_dir)/obj/hook_get_tick_interval.o \
 		-c $(source_dir)/hooks/get_tick_interval.cpp
 
+hooks.o: mms $(source_dir)/hooks/hooks.cpp
+	-mkdir -p $(output_dir)/obj
+	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+		-o $(output_dir)/obj/hooks.o \
+		-c $(source_dir)/hooks/hooks.cpp
+
 plugin.o: mms $(source_dir)/plugin.cpp
 	-mkdir -p $(output_dir)/obj
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
 		-o $(output_dir)/obj/plugin.o \
 		-c $(source_dir)/plugin.cpp
 
-srcds_tickrate_enabler.so: mms globals.o hook_get_tick_interval.o plugin.o
+srcds_tickrate_enabler.so: mms globals.o hook_get_tick_interval.o hooks.o plugin.o
 	$(CXX) \
 		-o $(output_dir)/srcds_tickrate_enabler.so $(LINKFLAGS) \
 		$(output_dir)/obj/globals.o \
 		$(output_dir)/obj/hook_get_tick_interval.o \
+		$(output_dir)/obj/hooks.o \
 		$(output_dir)/obj/plugin.o \
 		$(MMSDK)/build/core/metamod.2.$(ENGINE)/sourcehook_sourcehook*.o \
 		-ltier0_srv \

@@ -6,11 +6,9 @@
 #include <eiface.h>
 #include <tier0/icommandline.h>
 
-// Metamod Source
-#include <sourcehook/sourcehook_impl.h>
-
 // Plugin
 #include "globals/globals.h"
+#include "hooks/hooks.h"
 #include "hooks/get_tick_interval.h"
 #include "plugin.h"
 
@@ -28,9 +26,6 @@ Plugin g_plugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(
     Plugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_plugin
 );
-
-// Declare plugin hooks
-SH_DECL_HOOK0(IServerGameDLL, GetTickInterval, const, 0, float);
 
 
 // ========= PLUGIN INTERFACE IMPLEMENTATION =========
@@ -89,8 +84,7 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
     g_cmdline_tick_interval = 1.0f / cmdline_tickrate;
 
     // hook up `get_tick_interval()` into the ServerGameDLL instance
-    using namespace hooks;
-    SH_ADD_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, m.server_game_dll, get_tick_interval, false);
+    hooks::register_all(m.server_game_dll);
 
     // set version info string
     m.version_info = new char[256];
@@ -108,8 +102,7 @@ void Plugin::Unload(void) {
     delete m.version_info;
     m.version_info = NULL;
 
-    using namespace hooks;
-    SH_REMOVE_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, m.server_game_dll, get_tick_interval, false);
+    hooks::unregister_all(m.server_game_dll);
 }
 
 // This string is returned when `plugin_print` is typed into the SRCDS console

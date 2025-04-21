@@ -8,8 +8,9 @@
 #include <sourcehook/sourcehook_impl.h>
 
 // Plugin
-#include "get_tick_interval.h"
 #include "../globals/globals.h"
+#include "hooks.h"
+#include "get_tick_interval.h"
 
 
 // ========= HOOK IMPLEMENTATIONS =========

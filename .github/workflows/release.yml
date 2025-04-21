@@ -1,0 +1,42 @@
+name: Release SRCDS TickrateEnabler
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        branch:
+          - css
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v4
+
+      - name: Pull devcontainer image
+        run: docker pull ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest
+
+      - name: Build using hl2sdk/${{ matrix.branch }} inside devcontainer image
+        run: |
+          current_uid=$(id -u)
+          sudo chown -R 1000 $(pwd)
+          docker run --rm -v $(pwd):/src -w /src ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest make CLEAN=yes ENGINE=${{ matrix.branch }} -j $(nproc)
+          sudo chown -R ${current_uid} $(pwd)
+
+      - name: Generate release log
+        run: |
+          git fetch --unshallow
+          ./release-log.sh > output/release-log.md
+
+      - name: Draft a new release and upload release archive
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            output/srcds_tickrate_enabler*.tar.gz
+          body_path: output/release-log.md
+          draft: true # So we can manually edit before publishing

@@ -18,13 +18,6 @@
 // ========= PLUGIN INTERFACE DEFINITIONS =========
 namespace srcds::tickrate_enabler {
 
-// Expose plugin interface singleton
-Plugin plugin_instance;
-EXPOSE_SINGLE_INTERFACE_GLOBALVAR(
-    Plugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, plugin_instance
-);
-
-
 // ========= PLUGIN INTERFACE IMPLEMENTATION =========
 // public c'tor
 Plugin::Plugin() : Plugin{0} {}

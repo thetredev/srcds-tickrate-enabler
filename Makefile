@@ -23,7 +23,7 @@ LINKFLAGS=-shared -m32 -L$(HL2SDK)/lib/public/linux
 current_dir = $(shell pwd)
 output_dir = ./output
 
-all: mms package
+all: package
 
 mms:
 	-./build-mms.sh $(ENGINE) $(CLEAN)
@@ -53,13 +53,20 @@ plugin.o: mms $(source_dir)/plugin.cpp
 		-o $(output_dir)/obj/plugin.o \
 		-c $(source_dir)/plugin.cpp
 
-srcds_tickrate_enabler.so: mms globals.o hook_get_tick_interval.o hooks.o plugin.o
+plugin_exports.o: mms $(source_dir)/plugin_exports.cpp
+	-mkdir -p $(output_dir)/obj
+	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+		-o $(output_dir)/obj/plugin_exports.o \
+		-c $(source_dir)/plugin_exports.cpp
+
+srcds_tickrate_enabler.so: globals.o hook_get_tick_interval.o hooks.o plugin.o plugin_exports.o
 	$(CXX) \
 		-o $(output_dir)/srcds_tickrate_enabler.so $(LINKFLAGS) \
 		$(output_dir)/obj/globals.o \
 		$(output_dir)/obj/hook_get_tick_interval.o \
 		$(output_dir)/obj/hooks.o \
 		$(output_dir)/obj/plugin.o \
+		$(output_dir)/obj/plugin_exports.o \
 		$(MMSDK)/build/core/metamod.2.$(ENGINE)/sourcehook_sourcehook*.o \
 		-ltier0_srv \
 		-l:tier1_i486.a \

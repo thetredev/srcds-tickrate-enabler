@@ -27,28 +27,31 @@ LINKFLAGS=-shared -m32 -L$(HL2SDK)/lib/public/linux
 current_dir = $(shell pwd)
 output_dir = ./output
 
-all: clean mms globals.o hooks.o plugin.o plugin.so
+all: clean mms plugin.so
 
 mms:
 	-./build-mms.sh $(ENGINE)
 	-cd $(current_dir)
 
-globals.o: $(source_dir)/globals.cpp
+output:
+	-mkdir -p $(output_dir)
+
+globals.o: output $(source_dir)/globals.cpp
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
 		-o $(output_dir)/globals.o \
 		-c $(source_dir)/globals.cpp
 
-hooks.o: $(source_dir)/hooks.cpp
+hooks.o: output $(source_dir)/hooks.cpp
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
 		-o $(output_dir)/hooks.o \
 		-c $(source_dir)/hooks.cpp
 
-plugin.o: $(source_dir)/plugin.cpp
+plugin.o: output $(source_dir)/plugin.cpp
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
 		-o $(output_dir)/plugin.o \
 		-c $(source_dir)/plugin.cpp
 
-plugin.so: globals.o hooks.o plugin.o
+plugin.so: output globals.o hooks.o plugin.o
 	$(CXX) \
 		-o $(output_dir)/plugin.so $(LINKFLAGS) \
 		$(output_dir)/globals.o \

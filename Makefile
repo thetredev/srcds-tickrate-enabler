@@ -47,7 +47,7 @@ plugin.o: $(source_dir)/plugin.cpp
 		-o $(output_dir)/obj/plugin.o \
 		-c $(source_dir)/plugin.cpp
 
-srcds_tickrate_enabler.so: globals.o hooks.o plugin.o
+srcds_tickrate_enabler.so: mms globals.o hooks.o plugin.o
 	$(CXX) \
 		-o $(output_dir)/srcds_tickrate_enabler.so $(LINKFLAGS) \
 		$(output_dir)/obj/globals.o \

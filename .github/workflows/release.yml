@@ -37,6 +37,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
+            output/addons/*
             output/srcds_tickrate_enabler*.tar.gz
           body_path: output/release-log.md
           draft: true # So we can manually edit before publishing

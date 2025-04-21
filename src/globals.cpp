@@ -11,3 +11,6 @@ SourceHook::ISourceHook *g_SHPtr = &g_SourceHook;
 
 float g_cmdline_tick_interval = 0.0f;
 const char *g_plugin_name = "SRCDS TickrateEnabler";
+
+const char *g_plugin_author = "thetredev";
+char *g_version_info = NULL;

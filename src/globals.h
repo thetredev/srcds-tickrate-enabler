@@ -19,5 +19,8 @@ extern SourceHook::ISourceHook *g_SHPtr;
 extern float g_cmdline_tick_interval;
 extern const char *g_plugin_name;
 
+extern const char *g_plugin_author;
+extern char *g_version_info;
+
 
 #endif // SRCDS_TICKRATE_ENABLER__GLOBALS_H_

@@ -144,6 +144,10 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
     // hook up `get_tick_interval()` into the ServerGameDLL instance
     SH_ADD_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, gamedll, get_tick_interval, false);
 
+    // set version info string
+    g_version_info = (char *)malloc(256);
+    sprintf(g_version_info, "%s by %s %s", g_plugin_name, g_plugin_author, PLUGIN_VERSION);
+
     // print a message
     Msg("[%s] Loaded successfully!\n", g_plugin_name);
 
@@ -153,12 +157,15 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
 
 // Unhook the `get_tick_interval()` from the game server DLL on unload
 void Plugin::Unload(void) {
+    free(g_version_info);
+    g_version_info = NULL;
+
     SH_REMOVE_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, gamedll, get_tick_interval, false);
 }
 
 // This string is returned when `plugin_print` is typed into the SRCDS console
 const char *Plugin::GetPluginDescription(void) {
-    return "TickrateEnabler by thetredev " PLUGIN_VERSION;
+    return g_version_info;
 }
 
 // ========= PLUGIN INTERFACE STUB =========

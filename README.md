@@ -90,5 +90,3 @@ cd srcds-tickrate-enabler
 | Game Server | `engine` |
 | --- | --- |
 | Counter-Strike: Source | `css` |
-
-This will *always* perform a clean build for now.

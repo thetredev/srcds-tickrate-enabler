@@ -23,10 +23,10 @@ LINKFLAGS=-shared -m32 -L$(HL2SDK)/lib/public/linux
 current_dir = $(shell pwd)
 output_dir = ./output
 
-all: clean mms package
+all: mms package
 
 mms:
-	-./build-mms.sh $(ENGINE)
+	-./build-mms.sh $(ENGINE) $(CLEAN)
 	-cd $(current_dir)
 
 globals.o: mms $(source_dir)/globals.cpp
@@ -69,7 +69,3 @@ addons: srcds_tickrate_enabler.so
 
 package: addons
 	$(shell cd $(output_dir) && tar czf srcds_tickrate_enabler-$(PLUGIN_VERSION)-linux_amd64.tar.gz addons)
-
-clean:
-	-rm -rf output/*
-	-rm -rf metamod-source/build

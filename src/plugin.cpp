@@ -10,9 +10,9 @@
 #include <sourcehook/sourcehook_impl.h>
 
 // Plugin
-#include "globals.h"
+#include "globals/globals.h"
+#include "hooks/get_tick_interval.h"
 #include "plugin.h"
-#include "hooks.h"
 
 
 // memdbgon must be the last include file in a .cpp file!!!

@@ -1,5 +1,5 @@
-#ifndef SRCDS_TICKRATE_ENABLER__HOOKS_H_
-#define SRCDS_TICKRATE_ENABLER__HOOKS_H_
+#ifndef SRCDS_TICKRATE_ENABLER__GET_TICK_INTERVAL_H_
+#define SRCDS_TICKRATE_ENABLER__GET_TICK_INTERVAL_H_
 
 
 // ========= HOOK DECLARATIONS =========
@@ -11,4 +11,4 @@ float get_tick_interval();
 } // namespace srcds::tickrate_enabler::hooks
 
 
-#endif // SRCDS_TICKRATE_ENABLER__HOOKS_H_
+#endif // SRCDS_TICKRATE_ENABLER__GET_TICK_INTERVAL_H_

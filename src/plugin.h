@@ -16,6 +16,8 @@
 
 
 // ========= PLUGIN INTERFACE DECLARATION =========
+namespace srcds::tickrate_enabler {
+
 // Declare plugin data interface
 typedef struct PluginData {
     int client_command_index;
@@ -100,5 +102,6 @@ private:
     PluginData m;
 }; // class Plugin
 
+} // namespace srcds::tickrate_enabler
 
 #endif // SRCDS_TICKRATE_ENABLER__PLUGIN_H_

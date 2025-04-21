@@ -13,6 +13,10 @@
 
 
 // ========= HOOK IMPLEMENTATIONS =========
+namespace srcds::tickrate_enabler::hooks {
+
 float get_tick_interval() {
     RETURN_META_VALUE(MRES_SUPERCEDE, g_cmdline_tick_interval);
 }
+
+} // namespace srcds::tickrate_enabler::hooks

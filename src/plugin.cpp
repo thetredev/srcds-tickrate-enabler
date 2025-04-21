@@ -21,6 +21,8 @@
 
 
 // ========= PLUGIN INTERFACE DEFINITIONS =========
+namespace srcds::tickrate_enabler {
+
 // Expose plugin interface singleton
 Plugin g_plugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(
@@ -87,6 +89,7 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
     g_cmdline_tick_interval = 1.0f / cmdline_tickrate;
 
     // hook up `get_tick_interval()` into the ServerGameDLL instance
+    using namespace hooks;
     SH_ADD_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, m.server_game_dll, get_tick_interval, false);
 
     // set version info string
@@ -105,6 +108,7 @@ void Plugin::Unload(void) {
     free(m.version_info);
     m.version_info = NULL;
 
+    using namespace hooks;
     SH_REMOVE_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, m.server_game_dll, get_tick_interval, false);
 }
 
@@ -207,3 +211,5 @@ void Plugin::OnEdictAllocated(edict_t *) {}
 void Plugin::OnEdictFreed(const edict_t *) {}
 void Plugin::FireGameEvent(KeyValues *) {}
 void Plugin::GameFrame(bool) {}
+
+} // namespace srcds::tickrate_enabler

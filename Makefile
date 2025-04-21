@@ -1,10 +1,12 @@
 CC=gcc
 CXX=g++
 
+PLUGIN_VERSION=$(shell git describe --tags --always)
+
 # Work around hacks in the Source engine
 CFLAGS=-m32 -std=gnu++17 -fpermissive -fPIC \
 	-Dstrnicmp=strncasecmp -Dstricmp=strcasecmp -D_vsnprintf=vsnprintf \
-	-DPOSIX -DLINUX -D_LINUX -DGNU -DGNUC
+	-DPOSIX -DLINUX -D_LINUX -DGNU -DGNUC -DPLUGIN_VERSION=\"$(PLUGIN_VERSION)\"
 
 OPTFLAGS=-O3
 

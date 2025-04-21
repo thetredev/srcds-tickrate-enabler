@@ -2,6 +2,12 @@
 #define SRCDS_TICKRATE_ENABLER__PLUGIN_H_
 
 
+// ========= DEFINES =========
+#ifndef PLUGIN_VERSION
+#define PLUGIN_VERSION "dev"
+#endif // PLUGIN_VERSION
+
+
 // ========= INCLUDES =========
 // HL2SDK
 #include <igameevents.h>

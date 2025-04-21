@@ -160,7 +160,7 @@ void Plugin::Unload(void) {
 
 // This string is returned when `plugin_print` is typed into the SRCDS console
 const char *Plugin::GetPluginDescription(void) {
-    return "TickrateEnabler by thetredev";
+    return "TickrateEnabler by thetredev " PLUGIN_VERSION;
 }
 
 // ========= PLUGIN INTERFACE STUB =========

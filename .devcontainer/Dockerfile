@@ -11,6 +11,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     python3-venv \
     python3-pip \
     python3-wheel \
+    libelf-dev \
   && apt-get -y autoremove \
   && apt-get -y autoclean \
   && apt-get -y clean \

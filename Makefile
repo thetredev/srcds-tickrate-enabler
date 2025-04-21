@@ -10,10 +10,6 @@ CFLAGS=-m32 -std=gnu++17 -fpermissive -fPIC \
 
 OPTFLAGS=-O3
 
-# ******************************
-# Change these to the proper
-# locations for your system.
-# ******************************
 HL2SDK=./hl2sdk-$(ENGINE)
 MMSDK=./metamod-source
 source_dir = ./src

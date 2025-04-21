@@ -84,6 +84,14 @@ const char *get_servergamedll_interface_version() {
 
 // Hook the `get_tick_interval()` into the game server DLL on load
 bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_server_factory) {
+    // get cmdline parameter `-tickrate` value
+    float cmdline_tickrate = (float)(CommandLine()->ParmValue("-tickrate", 0));
+
+    if (cmdline_tickrate < 10.0f) {
+        // do not hook up anything
+        return true;
+    }
+
     const char *servergamedll_interface_version = get_servergamedll_interface_version();
     gamedll = (IServerGameDLL*)game_server_factory(servergamedll_interface_version, NULL);
 
@@ -93,21 +101,19 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
         return false;
     }
 
-    float cmdline_tickrate = (float)(CommandLine()->ParmValue("-tickrate", 0));
-
-    if (cmdline_tickrate > 10.0f) {
-        g_cmdline_tick_interval = 1.0f / cmdline_tickrate;
-    } else {
-        g_cmdline_tick_interval = DEFAULT_TICK_INTERVAL;
-    }
+    g_cmdline_tick_interval = 1.0f / cmdline_tickrate;
 
     SH_ADD_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, gamedll, get_tick_interval, false);
+    g_tick_rate_hook_enabled = true;
+
     return true;
 }
 
 // Unhook the `get_tick_interval()` from the game server DLL on unload
 void Plugin::Unload(void) {
-    SH_REMOVE_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, gamedll, get_tick_interval, false);
+    if (g_tick_rate_hook_enabled) {
+        SH_REMOVE_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, gamedll, get_tick_interval, false);
+    }
 }
 
 // This string is returned when `plugin_print` is typed into the SRCDS console

@@ -1,8 +1,11 @@
 name: Build devcontainer image
 
 on:
-  # manual only for now
+  # rebuild manually
   workflow_dispatch:
+  # rebuild image every month
+  schedule:
+    - cron: '0 0 1 * *'
 
 jobs:
   devcontainer-image:

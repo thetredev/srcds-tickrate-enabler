@@ -39,7 +39,7 @@ Plugin::Plugin(const PluginData &data) : m {data} {}
 // Hook the `get_tick_interval()` into the game server DLL on load
 bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_server_factory) {
     // get cmdline parameter `-tickrate` value
-    float cmdline_tickrate = (float)(CommandLine()->ParmValue("-tickrate", 0));
+    float cmdline_tickrate = static_cast<float>((CommandLine()->ParmValue("-tickrate", 0)));
 
     // do not hook up anything on invalid values
     if (cmdline_tickrate < 10.0f) {
@@ -148,7 +148,7 @@ const char *Plugin::get_servergamedll_interface_version(const char *game_dir) {
         delete buffer;
 
         // fall back to the string declared in `eiface.h`
-        buffer = (char *)INTERFACEVERSION_SERVERGAMEDLL;
+        buffer = const_cast<char *>(INTERFACEVERSION_SERVERGAMEDLL);
     }
 
     // return what we've found

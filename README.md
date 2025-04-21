@@ -35,9 +35,9 @@ This project is a fork of https://github.com/daemon32/tickrate_enabler which is 
 
 ## Server Version Compatibility
 
-The two legacy projects had a specific symbol imprinted into the code. That symbol (`ServerGameDLLXYZ` where `XYZ` is 0-prefixed a number) is used to load the server's interface and hookup a function to manipulate the server's tick inverval value which is calculated from the `-tickrate` SRCDS command line argument.
+The two legacy projects had a specific symbol imprinted into the code. That symbol (`ServerGameDLLXYZ` where `XYZ` is 0-prefixed a number) is used to load the server's interface implementation and hookup a function to manipulate the server's tick intverval value which is calculated from the `-tickrate` SRCDS command line argument.
 
-This version tries to read that symbol from the server file located at `<game dir>/bin/server_srv.so` (where `game_dir` is `cstrike` for example). It is usually located at the second line of that file when read with the `strings` command (part of the GNU `binutils` package). If the symbol can't be found in that file (which is highly unlikely), then the value representing the latest version at compile time will be used.
+This version tries to read that symbol from the server file located at `<game dir>/bin/server_srv.so` (where `game_dir` is `cstrike` for example). It is usually located at the second line of that file when read with the `strings` command (part of the GNU `binutils` package). If the symbol can't be found in that file (which is highly unlikely), then the value representing the latest version at compile time defined by `eiface.h` will be used.
 
 On failure, the plugin will error out with a more verbose message unlike the legacy projects.
 

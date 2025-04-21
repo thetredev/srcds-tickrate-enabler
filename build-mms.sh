@@ -14,6 +14,8 @@ if [[ ${clean_build} ]]; then
   rm -rf hl2sdk-${sdk} metamod-source
 
   git submodule update --init --recursive
+else
+  rm -rf output/srcds_tickrate_enabler*.tar.gz
 fi
 
 cd hl2sdk-${sdk}

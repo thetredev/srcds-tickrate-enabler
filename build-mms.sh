@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 sdk=${1}
 current_git_branch=$(git branch --show-current)
 patches_dir=patches/linux/gcc

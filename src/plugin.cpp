@@ -1,7 +1,4 @@
 // ========= INCLUDES =========
-// C++/std
-#include <filesystem>
-
 // HL2SDK
 #include <eiface.h>
 #include <tier0/icommandline.h>
@@ -115,27 +112,27 @@ const char *Plugin::GetPluginDescription(void) {
 // Falls back to compile time `INTERFACEVERSION_SERVERGAMEDLL` on failure.
 const char *Plugin::get_servergamedll_interface_version(const char *game_dir) {
     // construct command string `strings <game_dir>/bin/server_srv.so`
-    std::filesystem::path server_srv_so_buffer {game_dir};
-    server_srv_so_buffer /= "bin/server_srv.so";
-    const char *server_srv_so = server_srv_so_buffer.c_str();
+    char *so_path = new char[256];
+    sprintf(so_path, "%s/bin/server_srv.so", game_dir);
 
     // try find the line containing the needle...
     // (this is usually the second line)
     const char *needle = "ServerGameDLL";
     const size_t needle_len = strlen(needle);
 
-    Msg("[%s] Parsing file %s for %s ...\n", m.name, server_srv_so, needle);
+    Msg("[%s] Parsing file %s for %s ...\n", m.name, so_path, needle);
 
     char *buffer = NULL;
     size_t out_count = 0;
 
     bool found = false;
 
-    std::string command {"strings"};
-    command += " ";
-    command += server_srv_so;
+    char *command = new char[256];
+    sprintf(command, "strings %s", so_path);
 
-    FILE *bin = popen(command.data(), "r");
+    FILE *bin = popen(command, "r");
+    delete so_path;
+    delete command;
 
     while (getline(&buffer, &out_count, bin) > 0) {
         if (strncmp(buffer, needle, needle_len) == 0) {

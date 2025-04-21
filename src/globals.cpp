@@ -4,13 +4,8 @@
 
 
 // ========= DEFINE GLOBAL VARIABLES =========
-IServerGameDLL *gamedll = NULL;
-int g_PLID = 0;
 SourceHook::Impl::CSourceHookImpl g_SourceHook;
 SourceHook::ISourceHook *g_SHPtr = &g_SourceHook;
 
+int g_PLID = 0;
 float g_cmdline_tick_interval = 0.0f;
-const char *g_plugin_name = "SRCDS TickrateEnabler";
-
-const char *g_plugin_author = "thetredev";
-char *g_version_info = NULL;

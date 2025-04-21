@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "name": "srcds-tickrate-enabler",
+      "intelliSenseMode": "linux-gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "c17",
+      "cppStandard": "gnu++17",
+      "defines": [
+        "GNU",
+        "GNUC",
+        "LINUX",
+        "POSIX"
+      ],
+      "includePath": [
+        "hl2sdk-css/public",
+        "hl2sdk-css/public/tier0",
+        "hl2sdk-css/public/tier1",
+        "metamod-source/core",
+        "metamod-source/core/sourcehook"
+      ]
+    }
+  ],
+  "version": 4
+}

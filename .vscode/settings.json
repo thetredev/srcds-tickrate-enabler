@@ -1,0 +1,13 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/hl2sdk-*/*": true,
+    "**/metamod-source/*": true,
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/hl2sdk-*/*": true,
+    "**/metamod-source/*": true,
+  }
+}

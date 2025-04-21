@@ -44,10 +44,50 @@ Plugin::Plugin(int client_command_index) : Plugin{PluginData {
 Plugin::Plugin(const PluginData &data) : m {data} {}
 
 
+// Ask the currently running game server about its
+// imprinted ServerGameDLL interface version.
+// Falls back to compile time `INTERFACEVERSION_SERVERGAMEDLL` on failure.
+const char *get_servergamedll_interface_version() {
+    // TODO: do not hardcode game dir `cstrike` here
+    FILE *bin = popen("strings cstrike/bin/server_srv.so", "r");
+
+    const char *needle = "ServerGameDLL";
+    const size_t needle_len = strlen(needle);
+
+    char *buffer = NULL;
+    size_t out_count = 0;
+
+    bool found = false;
+
+    while (getline(&buffer, &out_count, bin) > 0) {
+        if (strncmp(buffer, needle, needle_len) == 0) {
+            found = true;
+            break;
+        }
+    }
+
+    pclose(bin);
+
+    if (found) {
+        const size_t needle_len_max = needle_len + 3; // version includes 3 chars
+
+        // truncate buffer len to the string length we're looking for
+        buffer[needle_len_max] = '\0';
+    } else {
+        free(buffer);
+        buffer = (char *)INTERFACEVERSION_SERVERGAMEDLL;
+    }
+
+    return buffer;
+}
+
+
 // Hook the `get_tick_interval()` into the game server DLL on load
 bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_server_factory) {
-    gamedll = (IServerGameDLL*)game_server_factory("ServerGameDLL010",NULL);
-    if(!gamedll)
+    const char *servergamedll_interface_version = get_servergamedll_interface_version();
+    gamedll = (IServerGameDLL*)game_server_factory(servergamedll_interface_version, NULL);
+
+    if (!gamedll)
     {
         Warning("Failed to get a pointer on ServerGameDLL.\n");
         return false;

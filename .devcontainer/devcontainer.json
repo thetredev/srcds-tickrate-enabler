@@ -1,0 +1,20 @@
+{
+  "name": "srcds-tickrate-enabler",
+  "image": "ghcr.io/thetredev/srcds-tickrate-enabler:latest",
+
+  "containerEnv": {
+    "EDITOR": "${localEnv:EDITOR:code --wait}",
+    "GIT_EDITOR": "${localEnv:EDITOR:code --wait}"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.makefile-tools",
+        "ms-vscode.cpptools-extension-pack"
+      ]
+    }
+  },
+
+  "remoteUser": "vscode"
+}

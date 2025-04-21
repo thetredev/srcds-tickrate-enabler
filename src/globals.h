@@ -17,8 +17,6 @@ extern SourceHook::Impl::CSourceHookImpl g_SourceHook;
 extern SourceHook::ISourceHook *g_SHPtr;
 
 extern float g_cmdline_tick_interval;
-extern bool g_tick_rate_hook_enabled;
-
 extern const char *g_log_message_prefix;
 
 

@@ -141,9 +141,6 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
     // hook up `get_tick_interval()` into the ServerGameDLL instance
     SH_ADD_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, gamedll, get_tick_interval, false);
 
-    // store that hooking up was done
-    g_tick_rate_hook_enabled = true;
-
     // print a message
     Msg("%s Loaded successfully!\n", g_log_message_prefix);
 
@@ -153,9 +150,7 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
 
 // Unhook the `get_tick_interval()` from the game server DLL on unload
 void Plugin::Unload(void) {
-    if (g_tick_rate_hook_enabled) {
-        SH_REMOVE_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, gamedll, get_tick_interval, false);
-    }
+    SH_REMOVE_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, gamedll, get_tick_interval, false);
 }
 
 // This string is returned when `plugin_print` is typed into the SRCDS console

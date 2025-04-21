@@ -1,0 +1,5 @@
+"Plugin"
+{
+  "alias"   "srcds_tickrate_enabler"
+  "file"    "addons/srcds_tickrate_enabler"
+}

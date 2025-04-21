@@ -22,9 +22,9 @@
 namespace srcds::tickrate_enabler {
 
 // Expose plugin interface singleton
-Plugin g_plugin;
+Plugin plugin_instance;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(
-    Plugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_plugin
+    Plugin, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, plugin_instance
 );
 
 

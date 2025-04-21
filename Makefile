@@ -47,7 +47,7 @@ plugin.o: output $(source_dir)/plugin.cpp
 		-o $(output_dir)/plugin.o \
 		-c $(source_dir)/plugin.cpp
 
-plugin.so: output globals.o hooks.o plugin.o
+plugin.so: globals.o hooks.o plugin.o
 	$(CXX) \
 		-o $(output_dir)/plugin.so $(LINKFLAGS) \
 		$(output_dir)/globals.o \

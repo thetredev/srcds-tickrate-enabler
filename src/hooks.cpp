@@ -14,14 +14,5 @@
 
 // ========= HOOK IMPLEMENTATIONS =========
 float get_tick_interval() {
-    float tickinterval = DEFAULT_TICK_INTERVAL;
-
-    if ( CommandLine()->CheckParm( "-tickrate" ) )
-    {
-        float tickrate = CommandLine()->ParmValue( "-tickrate", 0 );
-        if ( tickrate > 10 )
-            tickinterval = 1.0f / tickrate;
-    }
-
-    RETURN_META_VALUE(MRES_SUPERCEDE, tickinterval );
+    RETURN_META_VALUE(MRES_SUPERCEDE, g_cmdline_tick_interval);
 }

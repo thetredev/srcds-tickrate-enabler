@@ -53,8 +53,15 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
         return false;
     }
 
-    SH_ADD_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, gamedll, get_tick_interval, false);
+    float cmdline_tickrate = (float)(CommandLine()->ParmValue("-tickrate", 0));
 
+    if (cmdline_tickrate > 10.0f) {
+        g_cmdline_tick_interval = 1.0f / cmdline_tickrate;
+    } else {
+        g_cmdline_tick_interval = DEFAULT_TICK_INTERVAL;
+    }
+
+    SH_ADD_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, gamedll, get_tick_interval, false);
     return true;
 }
 

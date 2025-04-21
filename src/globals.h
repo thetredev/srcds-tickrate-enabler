@@ -16,5 +16,7 @@ extern int g_PLID;
 extern SourceHook::Impl::CSourceHookImpl g_SourceHook;
 extern SourceHook::ISourceHook *g_SHPtr;
 
+extern float g_cmdline_tick_interval;
+
 
 #endif // SRCDS_TICKRATE_ENABLER__GLOBALS_H_

@@ -19,5 +19,7 @@ extern SourceHook::ISourceHook *g_SHPtr;
 extern float g_cmdline_tick_interval;
 extern bool g_tick_rate_hook_enabled;
 
+extern const char *g_log_message_prefix;
+
 
 #endif // SRCDS_TICKRATE_ENABLER__GLOBALS_H_

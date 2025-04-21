@@ -47,17 +47,29 @@ Plugin::Plugin(const PluginData &data) : m {data} {}
 // Ask the currently running game server about its
 // imprinted ServerGameDLL interface version.
 // Falls back to compile time `INTERFACEVERSION_SERVERGAMEDLL` on failure.
-const char *get_servergamedll_interface_version() {
-    // TODO: do not hardcode game dir `cstrike` here
-    FILE *bin = popen("strings cstrike/bin/server_srv.so", "r");
+const char *get_servergamedll_interface_version(const char *game_dir) {
+    // construct command string `strings <game_dir>/bin/server_srv.so`
+    char command[] = "strings";
+    char path_appendix[] = "bin/server_srv.so";
 
+    char path[256];
+    snprintf(path, sizeof(path), "%s/%s", game_dir, path_appendix);
+
+    char command_buffer[256];
+    snprintf(command_buffer, sizeof(command_buffer), "%s %s", command, path);
+
+    // try find the line containing the needle...
+    // (this is usually the second line)
     const char *needle = "ServerGameDLL";
     const size_t needle_len = strlen(needle);
+
+    Msg("%s Parsing file %s for %s ...\n", g_log_message_prefix, path, needle);
 
     char *buffer = NULL;
     size_t out_count = 0;
 
     bool found = false;
+    FILE *bin = popen(command_buffer, "r");
 
     while (getline(&buffer, &out_count, bin) > 0) {
         if (strncmp(buffer, needle, needle_len) == 0) {
@@ -66,18 +78,25 @@ const char *get_servergamedll_interface_version() {
         }
     }
 
+    // close the .so file
     pclose(bin);
 
+    // evaluate the results...
     if (found) {
-        const size_t needle_len_max = needle_len + 3; // version includes 3 chars
-
         // truncate buffer len to the string length we're looking for
+        const size_t needle_len_max = needle_len + 3; // version includes 3 chars
         buffer[needle_len_max] = '\0';
     } else {
+        // free the memory allocated by getline()
+        // as we're not using it anymore
         free(buffer);
+
+        // fall back to the string declared in `eiface.h`
         buffer = (char *)INTERFACEVERSION_SERVERGAMEDLL;
     }
 
+    // return what we've found
+    Msg("%s Found %s value: %s\n", g_log_message_prefix, needle, buffer);
     return buffer;
 }
 
@@ -87,25 +106,48 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
     // get cmdline parameter `-tickrate` value
     float cmdline_tickrate = (float)(CommandLine()->ParmValue("-tickrate", 0));
 
+    // do not hook up anything on invalid values
     if (cmdline_tickrate < 10.0f) {
-        // do not hook up anything
-        return true;
-    }
+        // print an error message
+        Error("%s Requested tick rate %s is lower than the minimum value of 10.\n", g_log_message_prefix);
 
-    const char *servergamedll_interface_version = get_servergamedll_interface_version();
-    gamedll = (IServerGameDLL*)game_server_factory(servergamedll_interface_version, NULL);
-
-    if (!gamedll)
-    {
-        Warning("Failed to get a pointer on ServerGameDLL.\n");
+        // indicate to SRCDS that the plugin couldn't load
         return false;
     }
 
+    // get the current game dir
+    const char *game_dir = CommandLine()->ParmValue("-game", "hl2"); // stolen from Metamod Source `InitMainStates`
+
+    // get the current ServerGameDLL interface version
+    const char *servergamedll_interface_version = get_servergamedll_interface_version(game_dir);
+    gamedll = (IServerGameDLL*)game_server_factory(servergamedll_interface_version, NULL);
+
+    // abort if we couldn't find a reference to the current ServerGameDLL instance
+    if (!gamedll)
+    {
+        // print an error message
+        Error(
+            "%s Failed to get a pointer on ServerGameDLL. Expected: %s, Got: NULL\n",
+            g_log_message_prefix, servergamedll_interface_version
+        );
+
+        // indicate to SRCDS that the plugin couldn't load
+        return false;
+    }
+
+    // otherwise, calculate the tick interval for the tick rate requested via srcds cmdline
     g_cmdline_tick_interval = 1.0f / cmdline_tickrate;
 
+    // hook up `get_tick_interval()` into the ServerGameDLL instance
     SH_ADD_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, gamedll, get_tick_interval, false);
+
+    // store that hooking up was done
     g_tick_rate_hook_enabled = true;
 
+    // print a message
+    Msg("%s Loaded successfully!\n", g_log_message_prefix);
+
+    // indicate to SRCDS that the plugin loaded successfully
     return true;
 }
 

@@ -29,19 +29,19 @@ mms:
 	-./build-mms.sh $(ENGINE)
 	-cd $(current_dir)
 
-globals.o: $(source_dir)/globals.cpp
+globals.o: mms $(source_dir)/globals.cpp
 	-mkdir -p $(output_dir)/obj
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
 		-o $(output_dir)/obj/globals.o \
 		-c $(source_dir)/globals.cpp
 
-hooks.o: $(source_dir)/hooks.cpp
+hooks.o: mms $(source_dir)/hooks.cpp
 	-mkdir -p $(output_dir)/obj
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
 		-o $(output_dir)/obj/hooks.o \
 		-c $(source_dir)/hooks.cpp
 
-plugin.o: $(source_dir)/plugin.cpp
+plugin.o: mms $(source_dir)/plugin.cpp
 	-mkdir -p $(output_dir)/obj
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
 		-o $(output_dir)/obj/plugin.o \

@@ -3,10 +3,10 @@
 
 
 // ========= DECLARE GLOBAL VARIABLES =========
-namespace srcds::tickrate_enabler {
+namespace srcds::tickrate_enabler::globals {
 
 // Represents the tick interval value calculated for a specific tick rate value.
-extern float g_cmdline_tick_interval;
+extern float cmdline_tick_interval;
 
 } // namespace srcds::tickrate_enabler
 

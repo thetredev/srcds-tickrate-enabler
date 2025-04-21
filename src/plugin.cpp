@@ -71,7 +71,7 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
     }
 
     // otherwise, calculate the tick interval for the tick rate requested via srcds cmdline
-    g_cmdline_tick_interval = 1.0f / cmdline_tickrate;
+    globals::cmdline_tick_interval = 1.0f / cmdline_tickrate;
 
     // hook up `get_tick_interval()` into the ServerGameDLL instance
     hooks::register_all(m.server_game_dll);

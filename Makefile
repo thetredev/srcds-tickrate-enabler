@@ -23,7 +23,7 @@ LINKFLAGS=-shared -m32 -L$(HL2SDK)/lib/public/linux
 current_dir = $(shell pwd)
 output_dir = ./output
 
-all: clean mms plugin.so
+all: clean mms package
 
 mms:
 	-./build-mms.sh $(ENGINE)
@@ -47,9 +47,9 @@ plugin.o: output $(source_dir)/plugin.cpp
 		-o $(output_dir)/plugin.o \
 		-c $(source_dir)/plugin.cpp
 
-plugin.so: globals.o hooks.o plugin.o
+srcds_tickrate_enabler.so: globals.o hooks.o plugin.o
 	$(CXX) \
-		-o $(output_dir)/plugin.so $(LINKFLAGS) \
+		-o $(output_dir)/srcds_tickrate_enabler.so $(LINKFLAGS) \
 		$(output_dir)/globals.o \
 		$(output_dir)/hooks.o \
 		$(output_dir)/plugin.o \
@@ -62,6 +62,14 @@ plugin.so: globals.o hooks.o plugin.o
 	-rm -rf hl2sdk-* metamod-source
 	-git submodule update --init --recursive
 
+addons: srcds_tickrate_enabler.so
+	-mkdir -p $(output_dir)/addons
+	-cp $(current_dir)/static/srcds_tickrate_enabler.vdf $(output_dir)/addons/
+	-mv $(output_dir)/srcds_tickrate_enabler.so $(output_dir)/addons/
+
+package: addons
+	$(shell cd $(output_dir) && tar czf srcds_tickrate_enabler-$(PLUGIN_VERSION)-linux_amd64.tar.gz addons)
+
 clean:
-	-rm -f output/*
+	-rm -rf output/*
 	-rm -rf metamod-source/build

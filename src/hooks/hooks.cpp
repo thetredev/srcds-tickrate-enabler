@@ -22,11 +22,11 @@ SourceHook::ISourceHook *g_SHPtr = &source_hook_instance;
 SH_DECL_HOOK0(IServerGameDLL, GetTickInterval, const, 0, float);
 
 void register_all(IServerGameDLL *server_game_dll) {
-    SH_ADD_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, server_game_dll, get_tick_interval, false);
+    SH_ADD_HOOK(IServerGameDLL, GetTickInterval, server_game_dll, SH_STATIC(get_tick_interval), false);
 }
 
 void unregister_all(IServerGameDLL *server_game_dll) {
-    SH_REMOVE_HOOK_STATICFUNC(IServerGameDLL, GetTickInterval, server_game_dll, get_tick_interval, false);
+    SH_REMOVE_HOOK(IServerGameDLL, GetTickInterval, server_game_dll, SH_STATIC(get_tick_interval), false);
 }
 
 } // namespace srcds::tickrate_enabler::hooks

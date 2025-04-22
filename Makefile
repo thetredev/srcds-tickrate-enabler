@@ -71,7 +71,6 @@ srcds_tickrate_enabler.so: globals.o hook_get_tick_interval.o hooks.o plugin.o p
 		-ltier0_srv \
 		-l:tier1_i486.a \
 		-l:mathlib_i486.a \
-		-static-libstdc++ \
 		-ldl
 	-rm -rf hl2sdk-* metamod-source
 	-git submodule update --init --recursive

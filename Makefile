@@ -47,6 +47,12 @@ hooks.o: mms $(source_dir)/hooks/hooks.cpp
 		-o $(output_dir)/obj/hooks.o \
 		-c $(source_dir)/hooks/hooks.cpp
 
+binary_utils.o: mms $(source_dir)/utils/binary_utils.cpp
+	-mkdir -p $(output_dir)/obj
+	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+		-o $(output_dir)/obj/binary_utils.o \
+		-c $(source_dir)/utils/binary_utils.cpp
+
 io_utils.o: mms $(source_dir)/utils/io_utils.cpp
 	-mkdir -p $(output_dir)/obj
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
@@ -65,12 +71,13 @@ plugin_exports.o: mms $(source_dir)/plugin_exports.cpp
 		-o $(output_dir)/obj/plugin_exports.o \
 		-c $(source_dir)/plugin_exports.cpp
 
-srcds_tickrate_enabler.so: globals.o hook_get_tick_interval.o hooks.o io_utils.o plugin.o plugin_exports.o
+srcds_tickrate_enabler.so: globals.o hook_get_tick_interval.o hooks.o binary_utils.o io_utils.o plugin.o plugin_exports.o
 	$(CXX) \
 		-o $(output_dir)/srcds_tickrate_enabler.so $(LINKFLAGS) \
 		$(output_dir)/obj/globals.o \
 		$(output_dir)/obj/hook_get_tick_interval.o \
 		$(output_dir)/obj/hooks.o \
+		$(output_dir)/obj/binary_utils.o \
 		$(output_dir)/obj/io_utils.o \
 		$(output_dir)/obj/plugin.o \
 		$(output_dir)/obj/plugin_exports.o \

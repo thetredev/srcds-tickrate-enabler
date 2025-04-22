@@ -95,9 +95,6 @@ public:
 public:
     virtual void FireGameEvent(KeyValues *event_data);
 
-public:
-    const char *get_servergamedll_interface_version(const char *game_dir);
-
 private:
     PluginData m;
 }; // class Plugin

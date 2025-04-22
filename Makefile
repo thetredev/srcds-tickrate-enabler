@@ -1,3 +1,10 @@
+# TODO: This Makefile is becoming a mess. The dependency is most likely not correct,
+# 			at least it's not optimized for most efficient compilation, and most likely
+#				won't produce the most efficient and/or performant output.
+#
+#		Needs to be dealt with at some point...
+#
+
 CC=gcc
 CXX=g++
 

@@ -7,6 +7,7 @@
 #include "globals/globals.h"
 #include "hooks/hooks.h"
 #include "hooks/get_tick_interval.h"
+#include "utils/io_utils.h"
 #include "plugin.h"
 
 
@@ -115,45 +116,26 @@ const char *Plugin::get_servergamedll_interface_version(const char *game_dir) {
 
     Msg("[%s] Parsing file %s for %s ...\n", m.name, so_path, needle);
 
-    char *buffer = NULL;
-    size_t out_count = 0;
-
-    bool found = false;
-
     char *command = new char[256];
     sprintf(command, "strings %s", so_path);
-
-    FILE *bin = popen(command, "r");
     delete so_path;
+
+    char *needle_line = utils::io::read_command_stdout(command, needle, needle_len);
     delete command;
 
-    while (getline(&buffer, &out_count, bin) > 0) {
-        if (strncmp(buffer, needle, needle_len) == 0) {
-            found = true;
-            break;
-        }
-    }
-
-    // close the .so file
-    pclose(bin);
-
     // evaluate the results...
-    if (found) {
+    if (needle_line != NULL) {
         // truncate buffer len to the string length we're looking for
         const size_t needle_len_max = needle_len + 3; // version includes 3 chars
-        buffer[needle_len_max] = '\0';
+        needle_line[needle_len_max] = '\0';
     } else {
-        // free the memory allocated by getline()
-        // as we're not using it anymore
-        delete buffer;
-
         // fall back to the string declared in `eiface.h`
-        buffer = const_cast<char *>(INTERFACEVERSION_SERVERGAMEDLL);
+        needle_line = const_cast<char *>(INTERFACEVERSION_SERVERGAMEDLL);
     }
 
     // return what we've found
-    Msg("[%s] Found %s value: %s\n", m.name, needle, buffer);
-    return buffer;
+    Msg("[%s] Found %s value: %s\n", m.name, needle, needle_line);
+    return needle_line;
 }
 
 // ========= PLUGIN INTERFACE STUB =========

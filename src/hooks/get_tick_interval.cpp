@@ -17,7 +17,8 @@
 namespace srcds::tickrate_enabler::hooks {
 
 float get_tick_interval() {
-    RETURN_META_VALUE(MRES_SUPERCEDE, globals::cmdline_tick_interval);
+    g_SHPtr->SetRes(MRES_SUPERCEDE);
+    return globals::cmdline_tick_interval;
 }
 
 } // namespace srcds::tickrate_enabler::hooks

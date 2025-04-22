@@ -15,8 +15,8 @@
 namespace srcds::tickrate_enabler::hooks {
 
 int g_PLID = 0;
-SourceHook::Impl::CSourceHookImpl g_SourceHook;
-SourceHook::ISourceHook *g_SHPtr = &g_SourceHook;
+SourceHook::Impl::CSourceHookImpl source_hook_instance;
+SourceHook::ISourceHook *g_SHPtr = &source_hook_instance;
 
 // Declare hooks
 SH_DECL_HOOK0(IServerGameDLL, GetTickInterval, const, 0, float);

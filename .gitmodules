@@ -1,7 +1,9 @@
 [submodule "metamod-source"]
 	path = metamod-source
 	url = https://github.com/alliedmodders/metamod-source
+	ignore = dirty
 [submodule "hl2sdk-css"]
 	path = hl2sdk-css
 	url = https://github.com/alliedmodders/hl2sdk
 	branch = css
+	ignore = dirty

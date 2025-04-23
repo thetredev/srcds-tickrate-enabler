@@ -2,7 +2,7 @@ SHELL := /bin/bash
 CC = gcc
 CXX = g++
 
-PLUGIN_VERSION := $(shell git describe --tags --always)
+PLUGIN_VERSION := $(shell git describe --tags --always --dirty)
 
 # Work around hacks in the Source engine
 CFLAGS = -m32 -std=gnu++17 -fpermissive -fPIC \

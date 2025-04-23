@@ -11,12 +11,13 @@
 #include "get_tick_interval.h"
 
 
-// ========= HOOK IMPLEMENTATIONS =========
-namespace srcds::tickrate_enabler::hooks {
-
 int g_PLID = 0;
 SourceHook::Impl::CSourceHookImpl source_hook_instance;
 SourceHook::ISourceHook *g_SHPtr = &source_hook_instance;
+
+
+// ========= HOOK IMPLEMENTATIONS =========
+namespace srcds::tickrate_enabler::hooks {
 
 // Declare hooks
 SH_DECL_HOOK0(IServerGameDLL, GetTickInterval, const, 0, float);

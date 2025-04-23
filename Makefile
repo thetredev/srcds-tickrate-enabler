@@ -139,7 +139,7 @@ mms-configure: sdk-patches
 mms-build: mms-configure
 	cd $(MMS_BUILD_DIR) && $(VENV_AMBUILD)
 	mkdir -p $(OBJ_DIR)
-	mv $(MMS_BUILD_DIR)/core/metamod.2.$(ENGINE)/sourcehook_sourcehook*.o $(OBJ_DIR)
+	mv $(MMS_BUILD_DIR)/core/metamod.2.$(ENGINE)/linux-x86/sourcehook_sourcehook*.o $(OBJ_DIR)
 
 $(OBJ_DIR)/sourcehook*.o: $(OBJ_DIR) mms-build
 

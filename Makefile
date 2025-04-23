@@ -1,105 +1,158 @@
-# TODO: This Makefile is becoming a mess. The dependency is most likely not correct,
-# 			at least it's not optimized for most efficient compilation, and most likely
-#				won't produce the most efficient and/or performant output.
-#
-#		Needs to be dealt with at some point...
-#
+SHELL := /bin/bash
+CC = gcc
+CXX = g++
 
-CC=gcc
-CXX=g++
-
-PLUGIN_VERSION=$(shell git describe --tags --always)
+PLUGIN_VERSION := $(shell git describe --tags --always)
 
 # Work around hacks in the Source engine
-CFLAGS=-m32 -std=gnu++17 -fpermissive -fPIC \
+CFLAGS = -m32 -std=gnu++17 -fpermissive -fPIC \
 	-Dstrnicmp=strncasecmp -Dstricmp=strcasecmp -D_vsnprintf=vsnprintf \
 	-DPOSIX -DLINUX -D_LINUX -DGNU -DGNUC -DPLUGIN_VERSION=\"$(PLUGIN_VERSION)\"
 
-OPTFLAGS=-O3
+OPTFLAGS = -O3
 
-HL2SDK=./hl2sdk-$(ENGINE)
-MMSDK=./metamod-source
-source_dir = ./src
+RELEASE_ARCHIVE := srcds_tickrate_enabler-$(PLUGIN_VERSION)-linux_amd64.tar.gz
+ROOT_DIR := $(shell git rev-parse --show-toplevel)
+
+HL2SDK = hl2sdk-$(ENGINE)
+HL2SDK_DIR := $(ROOT_DIR)/$(HL2SDK)
+
+MMSDK = metamod-source
+MMSDK_DIR := $(ROOT_DIR)/$(MMSDK)
+
+SOURCE_DIR := $(ROOT_DIR)/src
+OUTPUT_DIR := $(ROOT_DIR)/output
+OBJ_DIR := $(OUTPUT_DIR)/obj
+ADDONS_DIR := $(OUTPUT_DIR)/addons
+RELEASE_PATH := $(ADDONS_DIR)/srcds_tickrate_enabler.so
+
+MMS_BUILD_DIR := $(OUTPUT_DIR)/$(MMSDK)
+
+VENV_DIR := $(OUTPUT_DIR)/venv
+VENV_BIN_DIR := $(VENV_DIR)/bin
+VENV_PYTHON := $(VENV_BIN_DIR)/python3
+VENV_PIP := $(VENV_BIN_DIR)/pip
+VENV_AMBUILD := $(VENV_BIN_DIR)/ambuild
 
 # Include Source SDK directories
-INCLUDES=-I$(source_dir) -I$(HL2SDK)/public -I$(HL2SDK)/public/tier0 -I$(HL2SDK)/public/tier1 -I$(MMSDK)/core -I$(MMSDK)/core/sourcehook
+INCLUDES := \
+	-I$(HL2SDK_DIR)/public \
+	-I$(HL2SDK_DIR)/public/tier0 \
+	-I$(HL2SDK_DIR)/public/tier1 \
+	-I$(MMSDK_DIR)/core \
+	-I$(MMSDK_DIR)/core/sourcehook
 
 # Include the folder with the Source SDK libraries
-LINKFLAGS=-shared -m32 -L$(HL2SDK)/lib/public/linux
+LINKFLAGS := -shared -m32 -L$(HL2SDK_DIR)/lib/public/linux
 
-current_dir = $(shell pwd)
-output_dir = ./output
+all: release
 
-all: package
+.PHONY: clean-submodules
+clean-submodules:
+	git submodule status | cut -d ' ' -f 3 | xargs rm -rf
+	git submodule update --init --recursive
 
-mms:
-	-./build-mms.sh $(ENGINE) $(CLEAN)
-	-cd $(current_dir)
+.PHONY: clean
+clean: clean-submodules
+	rm -rf $(OUTPUT_DIR)/*
 
-globals.o: mms $(source_dir)/globals
-	-mkdir -p $(output_dir)/obj
+.PHONY: sdk-patches
+sdk-patches: clean-submodules
+	./apply-patches.sh ./patches/linux/$(CC)/$(HL2SDK) $(HL2SDK_DIR)
+	./apply-patches.sh ./patches/linux/$(CC)/metamod-source $(MMSDK_DIR)
+
+.PHONY: objects-dir-create
+objects-dir-create:
+	mkdir -p $(OBJ_DIR)
+
+$(OBJ_DIR)/globals.o: \
+		$(SOURCE_DIR)/globals/globals.h \
+		$(SOURCE_DIR)/globals/globals.cpp
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
-		-o $(output_dir)/obj/globals.o \
-		-c $(source_dir)/globals/globals.cpp
+		-o $(OBJ_DIR)/globals.o \
+		-c $(SOURCE_DIR)/globals/globals.cpp
 
-hook_get_tick_interval.o: mms $(source_dir)/hooks/get_tick_interval.cpp
-	-mkdir -p $(output_dir)/obj
+$(OBJ_DIR)/hooks_get_tick_interval.o: sdk-patches \
+		$(SOURCE_DIR)/hooks/get_tick_interval.h \
+		$(SOURCE_DIR)/hooks/get_tick_interval.cpp
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
-		-o $(output_dir)/obj/hook_get_tick_interval.o \
-		-c $(source_dir)/hooks/get_tick_interval.cpp
+		-o $(OBJ_DIR)/hooks_get_tick_interval.o \
+		-c $(SOURCE_DIR)/hooks/get_tick_interval.cpp
 
-hooks.o: mms $(source_dir)/hooks/hooks.cpp
-	-mkdir -p $(output_dir)/obj
+$(OBJ_DIR)/hooks.o: sdk-patches \
+		$(SOURCE_DIR)/hooks/hooks.h \
+		$(SOURCE_DIR)/hooks/hooks.cpp
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
-		-o $(output_dir)/obj/hooks.o \
-		-c $(source_dir)/hooks/hooks.cpp
+		-o $(OBJ_DIR)/hooks.o \
+		-c $(SOURCE_DIR)/hooks/hooks.cpp
 
-binary_utils.o: mms $(source_dir)/utils/binary_utils.cpp
-	-mkdir -p $(output_dir)/obj
+$(OBJ_DIR)/binary_utils.o: sdk-patches \
+		$(SOURCE_DIR)/utils/binary_utils.h \
+		$(SOURCE_DIR)/utils/binary_utils.cpp
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
-		-o $(output_dir)/obj/binary_utils.o \
-		-c $(source_dir)/utils/binary_utils.cpp
+		-o $(OBJ_DIR)/binary_utils.o \
+		-c $(SOURCE_DIR)/utils/binary_utils.cpp
 
-io_utils.o: mms $(source_dir)/utils/io_utils.cpp
-	-mkdir -p $(output_dir)/obj
+$(OBJ_DIR)/io_utils.o: \
+		$(SOURCE_DIR)/utils/io_utils.h \
+		$(SOURCE_DIR)/utils/io_utils.cpp
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
-		-o $(output_dir)/obj/io_utils.o \
-		-c $(source_dir)/utils/io_utils.cpp
+		-o $(OBJ_DIR)/io_utils.o \
+		-c $(SOURCE_DIR)/utils/io_utils.cpp
 
-plugin.o: mms $(source_dir)/plugin.cpp
-	-mkdir -p $(output_dir)/obj
+$(OBJ_DIR)/plugin.o: sdk-patches \
+		$(SOURCE_DIR)/plugin.h \
+		$(SOURCE_DIR)/plugin.cpp
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
-		-o $(output_dir)/obj/plugin.o \
-		-c $(source_dir)/plugin.cpp
+		-o $(OBJ_DIR)/plugin.o \
+		-c $(SOURCE_DIR)/plugin.cpp
 
-plugin_exports.o: mms $(source_dir)/plugin_exports.cpp
-	-mkdir -p $(output_dir)/obj
+$(OBJ_DIR)/plugin_exports.o: sdk-patches \
+		$(SOURCE_DIR)/plugin_exports.cpp
 	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
-		-o $(output_dir)/obj/plugin_exports.o \
-		-c $(source_dir)/plugin_exports.cpp
+		-o $(OBJ_DIR)/plugin_exports.o \
+		-c $(SOURCE_DIR)/plugin_exports.cpp
 
-srcds_tickrate_enabler.so: globals.o hook_get_tick_interval.o hooks.o binary_utils.o io_utils.o plugin.o plugin_exports.o
-	$(CXX) \
-		-o $(output_dir)/srcds_tickrate_enabler.so $(LINKFLAGS) \
-		$(output_dir)/obj/globals.o \
-		$(output_dir)/obj/hook_get_tick_interval.o \
-		$(output_dir)/obj/hooks.o \
-		$(output_dir)/obj/binary_utils.o \
-		$(output_dir)/obj/io_utils.o \
-		$(output_dir)/obj/plugin.o \
-		$(output_dir)/obj/plugin_exports.o \
-		$(MMSDK)/build/core/metamod.2.$(ENGINE)/sourcehook_sourcehook*.o \
+$(OBJ_DIR): objects-dir-create \
+	$(OBJ_DIR)/globals.o \
+	$(OBJ_DIR)/hooks_get_tick_interval.o \
+	$(OBJ_DIR)/hooks.o \
+	$(OBJ_DIR)/binary_utils.o \
+	$(OBJ_DIR)/io_utils.o \
+	$(OBJ_DIR)/plugin.o \
+	$(OBJ_DIR)/plugin_exports.o \
+	$(OBJ_DIR)/plugin.o
+
+.PHONY: mms-configure
+mms-configure: sdk-patches
+	python3 -m venv $(VENV_DIR)
+	$(VENV_PIP) install wheel
+	test -d $(OUTPUT_DIR)/ambuild-git || git clone https://github.com/alliedmodders/ambuild $(OUTPUT_DIR)/ambuild-git
+	$(VENV_PIP) install $(OUTPUT_DIR)/ambuild-git
+
+	mkdir -p $(MMS_BUILD_DIR)
+	cd $(MMS_BUILD_DIR) && $(VENV_PYTHON) $(MMSDK_DIR)/configure.py --sdks $(ENGINE)
+
+.PHONY: mms-build
+mms-build: mms-configure
+	cd $(MMS_BUILD_DIR) && $(VENV_AMBUILD)
+	mkdir -p $(OBJ_DIR)
+	mv $(MMS_BUILD_DIR)/core/metamod.2.$(ENGINE)/sourcehook_sourcehook*.o $(OBJ_DIR)
+
+$(OBJ_DIR)/sourcehook*.o: $(OBJ_DIR) mms-build
+
+$(ADDONS_DIR):
+	mkdir -p $(ADDONS_DIR)
+
+$(RELEASE_PATH): $(OBJ_DIR) $(ADDONS_DIR) $(OBJ_DIR)/sourcehook*.o
+	$(CXX) -o $(RELEASE_PATH) $(LINKFLAGS) \
+		$(OBJ_DIR)/*.o \
 		-ltier0_srv \
 		-l:tier1_i486.a \
 		-l:mathlib_i486.a \
 		-ldl
-	-rm -rf hl2sdk-* metamod-source
-	-git submodule update --init --recursive
 
-addons: srcds_tickrate_enabler.so
-	-mkdir -p $(output_dir)/addons
-	-cp $(current_dir)/static/srcds_tickrate_enabler.vdf $(output_dir)/addons/
-	-mv $(output_dir)/srcds_tickrate_enabler.so $(output_dir)/addons/
-
-package: addons
-	$(shell cd $(output_dir) && tar czf srcds_tickrate_enabler-$(PLUGIN_VERSION)-linux_amd64.tar.gz addons)
+.PHONY: release
+release: $(RELEASE_PATH)
+	cp $(ROOT_DIR)/static/srcds_tickrate_enabler.vdf $(ADDONS_DIR)
+	cd $(OUTPUT_DIR) && tar czf $(RELEASE_ARCHIVE) addons

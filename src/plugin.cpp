@@ -39,7 +39,7 @@ Plugin::Plugin(const PluginData &data) : m {data} {}
 
 
 // Hook the `get_tick_interval()` into the game server DLL on load
-bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_server_factory) {
+bool Plugin::Load(CreateInterfaceFn /*interface_factory*/, CreateInterfaceFn game_server_factory) {
     // get cmdline parameter `-tickrate` value
     float cmdline_tickrate = static_cast<float>((CommandLine()->ParmValue("-tickrate", 0)));
     const float minimum_tickrate = 10.0f;

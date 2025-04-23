@@ -91,7 +91,7 @@ bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_se
 
 // Unhook the `get_tick_interval()` from the game server DLL on unload
 void Plugin::Unload(void) {
-    delete m.version_info;
+    delete [] m.version_info;
     m.version_info = NULL;
 
     hooks::unregister_all(m.server_game_dll);

@@ -30,10 +30,10 @@ const char *get_servergamedll_interface_version(const char *game_dir, const char
 
     char *command = new char[256];
     sprintf(command, "strings %s", so_path);
-    delete so_path;
+    delete [] so_path;
 
     char *needle_line = utils::io::read_command_stdout(command, needle, needle_len);
-    delete command;
+    delete [] command;
 
     // evaluate the results...
     if (needle_line != NULL) {

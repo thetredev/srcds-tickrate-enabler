@@ -57,7 +57,9 @@ bool Plugin::Load(CreateInterfaceFn /*interface_factory*/, CreateInterfaceFn gam
     const char *game_dir = CommandLine()->ParmValue("-game", "hl2"); // stolen from Metamod Source `InitMainStates`
 
     // get the current ServerGameDLL interface version
-    const char *servergamedll_interface_version = utils::binary::get_servergamedll_interface_version(game_dir, m.name);
+    const char *servergamedll_interface_version = utils::binary::get_servergamedll_interface_version(
+        game_dir, Msg, m.name, INTERFACEVERSION_SERVERGAMEDLL
+    );
     m.server_game_dll = static_cast<IServerGameDLL*>(game_server_factory(servergamedll_interface_version, NULL));
 
     // abort if we couldn't find a reference to the current ServerGameDLL instance

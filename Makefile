@@ -74,6 +74,20 @@ $(OBJ_DIR)/globals.o: \
 		-o $(OBJ_DIR)/globals.o \
 		-c $(SOURCE_DIR)/globals/globals.cpp
 
+$(OBJ_DIR)/binary_utils.o: \
+		$(SOURCE_DIR)/utils/binary_utils.h \
+		$(SOURCE_DIR)/utils/binary_utils.cpp
+	$(CXX) $(CFLAGS) $(CFLAGS_PLUGIN) $(OPTFLAGS) $(INCLUDES) \
+		-o $(OBJ_DIR)/binary_utils.o \
+		-c $(SOURCE_DIR)/utils/binary_utils.cpp
+
+$(OBJ_DIR)/io_utils.o: \
+		$(SOURCE_DIR)/utils/io_utils.h \
+		$(SOURCE_DIR)/utils/io_utils.cpp
+	$(CXX) $(CFLAGS) $(CFLAGS_PLUGIN) $(OPTFLAGS) $(INCLUDES) \
+		-o $(OBJ_DIR)/io_utils.o \
+		-c $(SOURCE_DIR)/utils/io_utils.cpp
+
 $(OBJ_DIR)/hooks_get_tick_interval.o: sdk-patches \
 		$(SOURCE_DIR)/hooks/get_tick_interval.h \
 		$(SOURCE_DIR)/hooks/get_tick_interval.cpp
@@ -87,20 +101,6 @@ $(OBJ_DIR)/hooks.o: sdk-patches \
 	$(CXX) $(CFLAGS) $(CFLAGS_PLUGIN) $(OPTFLAGS) $(INCLUDES) \
 		-o $(OBJ_DIR)/hooks.o \
 		-c $(SOURCE_DIR)/hooks/hooks.cpp
-
-$(OBJ_DIR)/binary_utils.o: sdk-patches \
-		$(SOURCE_DIR)/utils/binary_utils.h \
-		$(SOURCE_DIR)/utils/binary_utils.cpp
-	$(CXX) $(CFLAGS) $(CFLAGS_PLUGIN) $(OPTFLAGS) $(INCLUDES) \
-		-o $(OBJ_DIR)/binary_utils.o \
-		-c $(SOURCE_DIR)/utils/binary_utils.cpp
-
-$(OBJ_DIR)/io_utils.o: \
-		$(SOURCE_DIR)/utils/io_utils.h \
-		$(SOURCE_DIR)/utils/io_utils.cpp
-	$(CXX) $(CFLAGS) $(CFLAGS_PLUGIN) $(OPTFLAGS) $(INCLUDES) \
-		-o $(OBJ_DIR)/io_utils.o \
-		-c $(SOURCE_DIR)/utils/io_utils.cpp
 
 $(OBJ_DIR)/plugin.o: sdk-patches \
 		$(SOURCE_DIR)/plugin.h \

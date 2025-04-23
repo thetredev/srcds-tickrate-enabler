@@ -4,8 +4,6 @@
 #include <cstdio>
 #include <cstring>
 
-#include <eiface.h>
-
 #include "binary_utils.h"
 #include "io_utils.h"
 
@@ -16,7 +14,11 @@ namespace srcds::tickrate_enabler::utils::binary {
 // Ask the currently running game server about its
 // imprinted ServerGameDLL interface version.
 // Falls back to compile time `INTERFACEVERSION_SERVERGAMEDLL` on failure.
-const char *get_servergamedll_interface_version(const char *game_dir, const char *log_prefix) {
+const char *get_servergamedll_interface_version(
+    const char *game_dir,
+    log_function logger, const char *log_prefix,
+    const char *fallback
+) {
     // construct command string `strings <game_dir>/bin/server_srv.so`
     char *so_path = new char[256];
     sprintf(so_path, "%s/bin/server_srv.so", game_dir);
@@ -26,7 +28,7 @@ const char *get_servergamedll_interface_version(const char *game_dir, const char
     const char *needle = "ServerGameDLL";
     const size_t needle_len = strlen(needle);
 
-    Msg("[%s] Parsing file %s for %s ...\n", log_prefix, so_path, needle);
+    logger("[%s] Parsing file %s for %s ...\n", log_prefix, so_path, needle);
 
     char *command = new char[256];
     sprintf(command, "strings %s", so_path);
@@ -42,11 +44,11 @@ const char *get_servergamedll_interface_version(const char *game_dir, const char
         needle_line[needle_len_max] = '\0';
     } else {
         // fall back to the string declared in `eiface.h`
-        needle_line = const_cast<char *>(INTERFACEVERSION_SERVERGAMEDLL);
+        needle_line = const_cast<char *>(fallback);
     }
 
     // return what we've found
-    Msg("[%s] Found %s value: %s\n", log_prefix, needle, needle_line);
+    logger("[%s] Found %s value: %s\n", log_prefix, needle, needle_line);
     return needle_line;
 }
 

@@ -42,11 +42,12 @@ Plugin::Plugin(const PluginData &data) : m {data} {}
 bool Plugin::Load(CreateInterfaceFn interface_factory, CreateInterfaceFn game_server_factory) {
     // get cmdline parameter `-tickrate` value
     float cmdline_tickrate = static_cast<float>((CommandLine()->ParmValue("-tickrate", 0)));
+    const float minimum_tickrate = 10.0f;
 
     // do not hook up anything on invalid values
-    if (cmdline_tickrate < 10.0f) {
+    if (cmdline_tickrate < minimum_tickrate) {
         // print an error message
-        Error("[%s] Requested tick rate %s is lower than the minimum value of 10.\n", m.name);
+        Error("[%s] Requested tick rate %.1f is lower than the minimum value of %.1f.\n", m.name, cmdline_tickrate, minimum_tickrate);
 
         // indicate to SRCDS that the plugin couldn't load
         return false;

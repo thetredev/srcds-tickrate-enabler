@@ -11,7 +11,7 @@ CFLAGS = -m32 -std=gnu++17 -fpermissive -fPIC \
 
 CFLAGS_PLUGIN := -Wall -Wextra
 
-OPTFLAGS = -O3
+OPTFLAGS = -O3 -s -fno-ident -fno-asynchronous-unwind-tables
 
 RELEASE_ARCHIVE := srcds_tickrate_enabler-$(PLUGIN_VERSION)-linux_amd64.tar.gz
 ROOT_DIR := $(shell git rev-parse --show-toplevel)

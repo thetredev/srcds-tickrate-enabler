@@ -38,7 +38,7 @@ Plugin::Plugin(int client_command_index) : Plugin{PluginData {
 Plugin::Plugin(const PluginData &data) : m {data} {}
 
 
-// Hook the `get_tick_interval()` into the game server DLL on load
+// Prepare plugin execution
 bool Plugin::Load(CreateInterfaceFn /*interface_factory*/, CreateInterfaceFn game_server_factory) {
     // get cmdline parameter `-tickrate` value
     float cmdline_tickrate = static_cast<float>((CommandLine()->ParmValue("-tickrate", 0)));
@@ -76,7 +76,7 @@ bool Plugin::Load(CreateInterfaceFn /*interface_factory*/, CreateInterfaceFn gam
     // otherwise, calculate the tick interval for the tick rate requested via srcds cmdline
     globals::cmdline_tick_interval = 1.0f / cmdline_tickrate;
 
-    // hook up `get_tick_interval()` into the ServerGameDLL instance
+    // register all our hooks
     hooks::register_all(m.server_game_dll);
 
     // set version info string
@@ -90,11 +90,12 @@ bool Plugin::Load(CreateInterfaceFn /*interface_factory*/, CreateInterfaceFn gam
     return true;
 }
 
-// Unhook the `get_tick_interval()` from the game server DLL on unload
+// Cleanup
 void Plugin::Unload(void) {
     delete [] m.version_info;
     m.version_info = NULL;
 
+    // unregister all our hooks
     hooks::unregister_all(m.server_game_dll);
 }
 

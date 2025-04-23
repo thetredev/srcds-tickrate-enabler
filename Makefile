@@ -147,7 +147,7 @@ $(ADDONS_DIR):
 	mkdir -p $(ADDONS_DIR)
 
 $(RELEASE_PATH): $(OBJ_DIR) $(ADDONS_DIR) $(OBJ_DIR)/sourcehook*.o
-	$(CXX) -o $(RELEASE_PATH) $(LINKFLAGS) \
+	$(CXX) $(OPTFLAGS) -o $(RELEASE_PATH) $(LINKFLAGS) \
 		$(OBJ_DIR)/*.o \
 		-ltier0_srv \
 		-l:tier1_i486.a \

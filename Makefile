@@ -9,6 +9,8 @@ CFLAGS = -m32 -std=gnu++17 -fpermissive -fPIC \
 	-Dstrnicmp=strncasecmp -Dstricmp=strcasecmp -D_vsnprintf=vsnprintf \
 	-DPOSIX -DLINUX -D_LINUX -DGNU -DGNUC -DPLUGIN_VERSION=\"$(PLUGIN_VERSION)\"
 
+CFLAGS_PLUGIN := -Wall -Wextra
+
 OPTFLAGS = -O3
 
 RELEASE_ARCHIVE := srcds_tickrate_enabler-$(PLUGIN_VERSION)-linux_amd64.tar.gz
@@ -68,48 +70,48 @@ objects-dir-create:
 $(OBJ_DIR)/globals.o: \
 		$(SOURCE_DIR)/globals/globals.h \
 		$(SOURCE_DIR)/globals/globals.cpp
-	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+	$(CXX) $(CFLAGS) $(CFLAGS_PLUGIN) $(OPTFLAGS) $(INCLUDES) \
 		-o $(OBJ_DIR)/globals.o \
 		-c $(SOURCE_DIR)/globals/globals.cpp
 
 $(OBJ_DIR)/hooks_get_tick_interval.o: sdk-patches \
 		$(SOURCE_DIR)/hooks/get_tick_interval.h \
 		$(SOURCE_DIR)/hooks/get_tick_interval.cpp
-	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+	$(CXX) $(CFLAGS) $(CFLAGS_PLUGIN) $(OPTFLAGS) $(INCLUDES) \
 		-o $(OBJ_DIR)/hooks_get_tick_interval.o \
 		-c $(SOURCE_DIR)/hooks/get_tick_interval.cpp
 
 $(OBJ_DIR)/hooks.o: sdk-patches \
 		$(SOURCE_DIR)/hooks/hooks.h \
 		$(SOURCE_DIR)/hooks/hooks.cpp
-	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+	$(CXX) $(CFLAGS) $(CFLAGS_PLUGIN) $(OPTFLAGS) $(INCLUDES) \
 		-o $(OBJ_DIR)/hooks.o \
 		-c $(SOURCE_DIR)/hooks/hooks.cpp
 
 $(OBJ_DIR)/binary_utils.o: sdk-patches \
 		$(SOURCE_DIR)/utils/binary_utils.h \
 		$(SOURCE_DIR)/utils/binary_utils.cpp
-	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+	$(CXX) $(CFLAGS) $(CFLAGS_PLUGIN) $(OPTFLAGS) $(INCLUDES) \
 		-o $(OBJ_DIR)/binary_utils.o \
 		-c $(SOURCE_DIR)/utils/binary_utils.cpp
 
 $(OBJ_DIR)/io_utils.o: \
 		$(SOURCE_DIR)/utils/io_utils.h \
 		$(SOURCE_DIR)/utils/io_utils.cpp
-	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+	$(CXX) $(CFLAGS) $(CFLAGS_PLUGIN) $(OPTFLAGS) $(INCLUDES) \
 		-o $(OBJ_DIR)/io_utils.o \
 		-c $(SOURCE_DIR)/utils/io_utils.cpp
 
 $(OBJ_DIR)/plugin.o: sdk-patches \
 		$(SOURCE_DIR)/plugin.h \
 		$(SOURCE_DIR)/plugin.cpp
-	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+	$(CXX) $(CFLAGS) $(CFLAGS_PLUGIN) $(OPTFLAGS) $(INCLUDES) \
 		-o $(OBJ_DIR)/plugin.o \
 		-c $(SOURCE_DIR)/plugin.cpp
 
 $(OBJ_DIR)/plugin_exports.o: sdk-patches \
 		$(SOURCE_DIR)/plugin_exports.cpp
-	$(CXX) $(CFLAGS) $(OPTFLAGS) $(INCLUDES) \
+	$(CXX) $(CFLAGS) $(CFLAGS_PLUGIN) $(OPTFLAGS) $(INCLUDES) \
 		-o $(OBJ_DIR)/plugin_exports.o \
 		-c $(SOURCE_DIR)/plugin_exports.cpp
 

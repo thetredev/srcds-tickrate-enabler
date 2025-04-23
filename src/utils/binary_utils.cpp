@@ -1,6 +1,3 @@
-#ifndef SRCDS_TICKRATE_ENABLER__UTILS__BINARY_H_
-#define SRCDS_TICKRATE_ENABLER__UTILS__BINARY_H_
-
 #include <cstdio>
 #include <cstring>
 
@@ -53,5 +50,3 @@ const char *get_servergamedll_interface_version(
 }
 
 } // srcds::tickrate_enabler::utils::binary
-
-#endif // SRCDS_TICKRATE_ENABLER__UTILS__BINARY_H_

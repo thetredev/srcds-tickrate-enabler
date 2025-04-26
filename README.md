@@ -59,6 +59,8 @@ This is where I've ended up until this point:
 - The source code is optimized and follows a modular approach, located under the [`src`](src) directory
 - The plugin version is baked in automatically using `git describe` at compile time and therefore derived from the git ref or tag
 
+**Side note**: This project only links with the compiled `SourceHook` object files from `Metamod: Source` and doesn't link with the latter itself.
+
 
 # Installation
 

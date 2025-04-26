@@ -17,6 +17,7 @@ Table of Contents
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 
+
 # Supported OS, Engines and Game Servers
 
 The following engines and game servers are currently supported:
@@ -25,6 +26,7 @@ The following engines and game servers are currently supported:
 | Linux | Source 1 | Counter-Strike: Source |
 
 Note: anything else is untested.
+
 
 # Acknowledgements
 
@@ -72,6 +74,7 @@ apt-get install binutils
 ## Plugin Installation
 
 See the installation instructions for the respective [release](https://github.com/thetredev/srcds-tickrate-enabler/releases).
+
 
 # Building From Source
 

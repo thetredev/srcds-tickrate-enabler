@@ -40,6 +40,15 @@ Plugin::Plugin(const PluginData &data) : m {data} {}
 
 // Prepare plugin execution
 bool Plugin::Load(CreateInterfaceFn /*interface_factory*/, CreateInterfaceFn game_server_factory) {
+    // ensure availability of external dependencies
+    if (system("which strings > /dev/null 2>&1") != 0) {
+        // print an error message
+        Error("[%s] Cannot find the 'strings' command. Please install the 'binutils' package on the system.\n", m.name);
+
+        // indicate to SRCDS that the plugin couldn't load
+        return false;
+    }
+
     // get cmdline parameter `-tickrate` value
     float cmdline_tickrate = static_cast<float>((CommandLine()->ParmValue("-tickrate", 0)));
     const float minimum_tickrate = 10.0f;

@@ -35,7 +35,7 @@ Plugin::Plugin(int client_command_index) : Plugin{PluginData {
 }} {}
 
 // private c'tor
-Plugin::Plugin(const PluginData &data) : m {data} {}
+Plugin::Plugin(const PluginData &data) : m {std::move(data)} {}
 
 
 // Prepare plugin execution

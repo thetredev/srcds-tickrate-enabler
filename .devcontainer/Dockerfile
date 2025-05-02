@@ -22,3 +22,6 @@ RUN git config --system user.name 'github-actions' \
   && git config --system --add safe.directory '*'
 
 USER vscode
+WORKDIR /home/vscode
+
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y

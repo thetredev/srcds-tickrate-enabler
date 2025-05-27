@@ -2,6 +2,8 @@
 
 A tickrate enabler plugin for Source Dedicated Server (SRCDS) environments for which the `-tickrate` command line parameter is ignored on startup.
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/thetredev/srcds-tickrate-enabler)
+
 Table of Contents
 =================
 

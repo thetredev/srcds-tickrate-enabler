@@ -3,7 +3,7 @@
 #include <eiface.h>
 
 // Metamod Source
-#include <sourcehook_impl.h>
+//#include <sourcehook_impl.h>
 
 // Plugin
 #include "hooks.h"
@@ -11,23 +11,23 @@
 #include "get_tick_interval.h"
 
 
-int g_PLID = 0;
-SourceHook::Impl::CSourceHookImpl source_hook_instance;
-SourceHook::ISourceHook *g_SHPtr = &source_hook_instance;
+// int g_PLID = 0;
+// SourceHook::Impl::CSourceHookImpl source_hook_instance;
+// SourceHook::ISourceHook *g_SHPtr = &source_hook_instance;
 
 
 // ========= HOOK IMPLEMENTATIONS =========
 namespace srcds::tickrate_enabler::hooks {
 
 // Declare hooks
-SH_DECL_HOOK0(IServerGameDLL, GetTickInterval, const, 0, float);
+//SH_DECL_HOOK0(IServerGameDLL, GetTickInterval, const, 0, float);
 
 void register_all(IServerGameDLL *server_game_dll) {
-    SH_ADD_HOOK(IServerGameDLL, GetTickInterval, server_game_dll, SH_STATIC(get_tick_interval), false);
+    //SH_ADD_HOOK(IServerGameDLL, GetTickInterval, server_game_dll, SH_STATIC(get_tick_interval), false);
 }
 
 void unregister_all(IServerGameDLL *server_game_dll) {
-    SH_REMOVE_HOOK(IServerGameDLL, GetTickInterval, server_game_dll, SH_STATIC(get_tick_interval), false);
+    //SH_REMOVE_HOOK(IServerGameDLL, GetTickInterval, server_game_dll, SH_STATIC(get_tick_interval), false);
 }
 
 } // namespace srcds::tickrate_enabler::hooks

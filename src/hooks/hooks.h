@@ -4,11 +4,11 @@
 
 // ========= INCLUDES =========
 // Metamod Source
-#include <sourcehook.h>
+//#include <sourcehook.h>
 
 
-extern int g_PLID;
-extern SourceHook::ISourceHook *g_SHPtr;
+// extern int g_PLID;
+// extern SourceHook::ISourceHook *g_SHPtr;
 
 
 // ========= HOOK DECLARATIONS =========

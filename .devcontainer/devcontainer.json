@@ -1,6 +1,6 @@
 {
   "name": "srcds-tickrate-enabler",
-  "image": "ghcr.io/thetredev/srcds-tickrate-enabler:latest",
+  "image": "ghcr.io/thetredev/srcds-tickrate-enabler:bear",
 
   "containerEnv": {
     "EDITOR": "${localEnv:EDITOR:code --wait}",
@@ -17,6 +17,10 @@
       ]
     }
   },
+
+  "mounts": [
+    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,ro,type=bind,consistency=cached"
+  ],
 
   "remoteUser": "vscode"
 }

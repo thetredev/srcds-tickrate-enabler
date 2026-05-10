@@ -1,0 +1,69 @@
+From a41620777801227326de5c220813c07847e47eb3 Mon Sep 17 00:00:00 2001
+From: Timo Reichl <thetredev@gmail.com>
+Date: Sun, 10 May 2026 23:12:02 +0200
+Subject: [PATCH] x86Hook: fix x86 build (-m32)
+
+Signed-off-by: Timo Reichl <thetredev@gmail.com>
+---
+ src/mem_accessor.cpp | 4 ++++
+ src/x86_hook.cpp     | 4 ++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/src/mem_accessor.cpp b/src/mem_accessor.cpp
+index 2da2fa2..c74e107 100644
+--- a/src/mem_accessor.cpp
++++ b/src/mem_accessor.cpp
+@@ -168,6 +168,7 @@ ProtFlag MemAccessor::mem_protect(uintptr_t dest, size_t size, ProtFlag prot, bo
+ /**
+  * Write a 14 byte indirect near jump.
+  */
++#if DYNO_ARCH_X86 == 64
+ insts_t MemAccessor::makex64Jump(uintptr_t address, uintptr_t destination) {
+ 	std::vector<uint8_t> bytes(14);
+ 	bytes[0] = 0xFF;
+@@ -245,6 +246,7 @@ insts_t MemAccessor::makex64MinimumJump(uintptr_t address, uintptr_t destination
+ 
+ 	return { specialDest, Instruction(this, address, disp, 2, true, true, std::move(bytes), "jmp", ss.str(), Mode::x64) };
+ }
++#endif // DYNO_ARCH_X86 == 64
+ 
+ insts_t MemAccessor::makex86Jmp(uintptr_t address, uintptr_t destination) {
+ 	Instruction::Displacement disp{0};
+@@ -265,11 +267,13 @@ insts_t MemAccessor::makeAgnosticJmp(uintptr_t address, uintptr_t destination) {
+ #endif
+ }
+ 
++#if DYNO_ARCH_X86 == 64
+ insts_t MemAccessor::makex64DestHolder(uintptr_t destination, uintptr_t destHolder) {
+ 	std::vector<uint8_t> destBytes(8);
+ 	std::memcpy(destBytes.data(), &destination, 8);
+ 	return insts_t{ Instruction(this, destHolder, Instruction::Displacement{0}, 0, false, false, std::move(destBytes), "dest holder", "", Mode::x64) };
+ }
++#endif // DYNO_ARCH_X86 == 64
+ 
+ void MemAccessor::writeEncoding(const insts_t& instructions) {
+ 	for (const auto& inst : instructions)
+diff --git a/src/x86_hook.cpp b/src/x86_hook.cpp
+index b9b586a..c81aae5 100644
+--- a/src/x86_hook.cpp
++++ b/src/x86_hook.cpp
+@@ -159,14 +159,14 @@ void x86Hook::writeCallHandler(Assembler& a, CallbackType type) const {
+ 
+ int32_t x86Hook::writeSaveScratchRegisters(Assembler& a) const {
+ 	for (const auto& reg : Registers::ScratchList()) {
+-		writeRegToMem(a, reg, false);
++		writeRegToMem(a, m_registers[reg], false);
+ 	}
+ 	return 0;
+ }
+ 
+ void x86Hook::writeRestoreScratchRegisters(Assembler& a) const {
+ 	for (const auto& reg : Registers::ScratchList()) {
+-		writeMemToReg(a, reg, false);
++		writeMemToReg(a, m_registers[reg], false);
+ 	}
+ }
+ 
+-- 
+2.47.3
+

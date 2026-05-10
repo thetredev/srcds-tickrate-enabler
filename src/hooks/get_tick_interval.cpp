@@ -5,7 +5,7 @@
 #include <tier0/icommandline.h>
 
 // Metamod Source
-#include <sourcehook/sourcehook_impl.h>
+//#include <sourcehook/sourcehook_impl.h>
 
 // Plugin
 #include "../globals/globals.h"
@@ -17,7 +17,7 @@
 namespace srcds::tickrate_enabler::hooks {
 
 float get_tick_interval() {
-    g_SHPtr->SetRes(MRES_SUPERCEDE);
+    //g_SHPtr->SetRes(MRES_SUPERCEDE);
     return globals::cmdline_tick_interval;
 }
 

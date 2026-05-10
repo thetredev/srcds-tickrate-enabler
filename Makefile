@@ -19,16 +19,11 @@ ROOT_DIR := $(shell git rev-parse --show-toplevel)
 HL2SDK = hl2sdk-$(ENGINE)
 HL2SDK_DIR := $(ROOT_DIR)/$(HL2SDK)
 
-MMSDK = metamod-source
-MMSDK_DIR := $(ROOT_DIR)/$(MMSDK)
-
 SOURCE_DIR := $(ROOT_DIR)/src
 OUTPUT_DIR := $(ROOT_DIR)/output
 OBJ_DIR := $(OUTPUT_DIR)/obj
 ADDONS_DIR := $(OUTPUT_DIR)/addons
 RELEASE_PATH := $(ADDONS_DIR)/srcds_tickrate_enabler.so
-
-MMS_BUILD_DIR := $(OUTPUT_DIR)/$(MMSDK)
 
 VENV_DIR := $(OUTPUT_DIR)/venv
 VENV_BIN_DIR := $(VENV_DIR)/bin
@@ -41,30 +36,44 @@ INCLUDES := \
 	-I$(HL2SDK_DIR)/public \
 	-I$(HL2SDK_DIR)/public/tier0 \
 	-I$(HL2SDK_DIR)/public/tier1 \
-	-I$(MMSDK_DIR)/core \
-	-I$(MMSDK_DIR)/core/sourcehook
+	-Ilib/DynoHook/include \
+	-Ilib/DynoHook/exports
 
 # Include the folder with the Source SDK libraries
-LINKFLAGS := -shared -m32 -L$(HL2SDK_DIR)/lib/public/linux
+LINKFLAGS := \
+	-shared \
+	-m32 \
+	-L$(HL2SDK_DIR)/lib/public/linux \
+	-L lib/DynoHook/lib
 
 all: release
+
+.PHONY: compile-commands
+compile-commands:
+	./gen-compile-commands.sh
+
+.PHONY: init-submodules
+init-submodules:
+	git submodule update --init --recursive
 
 .PHONY: clean-submodules
 clean-submodules:
 	git submodule status | cut -d ' ' -f 3 | xargs rm -rf
-	git submodule update --init --recursive
+
+.PHONY: reinit-submodules
+reinit-submodules: clean-submodules init-submodules
 
 .PHONY: clean
 clean: clean-submodules
 	rm -rf $(OUTPUT_DIR)/*
 
 .PHONY: sdk-patches
-sdk-patches: clean-submodules
+sdk-patches: reinit-submodules
 	./apply-patches.sh ./patches/linux/$(CC)/$(HL2SDK) $(HL2SDK_DIR)
-	./apply-patches.sh ./patches/linux/$(CC)/metamod-source $(MMSDK_DIR)
+	./apply-patches.sh ./patches/linux/$(CC)/DynoHook DynoHook
 
 .PHONY: objects-dir-create
-objects-dir-create:
+objects-dir-create: compile-commands
 	mkdir -p $(OBJ_DIR)
 
 $(OBJ_DIR)/globals.o: \
@@ -125,34 +134,44 @@ $(OBJ_DIR): objects-dir-create \
 	$(OBJ_DIR)/plugin_exports.o \
 	$(OBJ_DIR)/plugin.o
 
-.PHONY: mms-configure
-mms-configure: sdk-patches
-	python3 -m venv $(VENV_DIR)
-	$(VENV_PIP) install wheel
-	test -d $(OUTPUT_DIR)/ambuild-git || git clone https://github.com/alliedmodders/ambuild $(OUTPUT_DIR)/ambuild-git
-	$(VENV_PIP) install $(OUTPUT_DIR)/ambuild-git
+.PHONY: objects
+objects: $(OBJ_DIR)
 
-	mkdir -p $(MMS_BUILD_DIR)
-	cd $(MMS_BUILD_DIR) && $(VENV_PYTHON) $(MMSDK_DIR)/configure.py --sdks $(ENGINE)
+.PHONY: dynohook-lib
+dynohook-lib:
+	rm -rf lib/DynoHook
+	rm -rf DynoHook/build
+	cmake -S DynoHook -B DynoHook/build \
+	    -DCMAKE_BUILD_TYPE="Release" \
+		-DCMAKE_INSTALL_PREFIX:PATH="lib/DynoHook" \
+		-DCMAKE_C_FLAGS="-m32" \
+		-DCMAKE_CXX_FLAGS="-m32" \
+		-DCMAKE_EXE_LINKER_FLAGS="-m32" \
+		-DCMAKE_SHARED_LINKER_FLAGS="-m32"
+	cmake --build DynoHook/build -j$(shell nproc)
+	cmake --install DynoHook/build
+	rm -rf lib/DynoHook/exports
+	cp -r DynoHook/build/exports lib/DynoHook/exports
 
-.PHONY: mms-build
-mms-build: mms-configure
-	cd $(MMS_BUILD_DIR) && $(VENV_AMBUILD)
-	mkdir -p $(OBJ_DIR)
-	mv $(MMS_BUILD_DIR)/core/metamod.2.$(ENGINE)/linux-x86/sourcehook_sourcehook*.o $(OBJ_DIR)
-
-$(OBJ_DIR)/sourcehook*.o: $(OBJ_DIR) mms-build
+# TODO: Add DynoHooks library and link it
 
 $(ADDONS_DIR):
 	mkdir -p $(ADDONS_DIR)
 
-$(RELEASE_PATH): $(OBJ_DIR) $(ADDONS_DIR) $(OBJ_DIR)/sourcehook*.o
+$(RELEASE_PATH): $(OBJ_DIR) $(ADDONS_DIR) dynohook-lib
 	$(CXX) $(OPTFLAGS) -o $(RELEASE_PATH) $(LINKFLAGS) \
 		$(OBJ_DIR)/*.o \
 		-ltier0_srv \
 		-l:tier1_i486.a \
 		-l:mathlib_i486.a \
+		-l:libasmjit.a \
+		-l:libasmtk.a \
+		-l:libZycore.a \
+		-l:libZydis.a \
 		-ldl
+
+.PHONY: shared-lib
+shared-lib: $(RELEASE_PATH)
 
 .PHONY: release
 release: $(RELEASE_PATH)
